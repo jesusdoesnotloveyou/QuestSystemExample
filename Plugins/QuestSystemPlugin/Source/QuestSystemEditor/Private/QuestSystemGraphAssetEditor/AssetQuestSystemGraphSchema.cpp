@@ -17,51 +17,54 @@
 
 int32 UAssetQuestSystemGraphSchema::CurrentCacheRefreshID = 0;
 
-class FNodeVisitorCycleChecker
+namespace SchemaUtils
 {
-public:
-	/** Check whether a loop in the graph would be caused by linking the passed-in nodes */
-	bool CheckForLoop(UEdGraphNode* StartNode, UEdGraphNode* EndNode)
-	{
-		VisitedNodes.Add(StartNode);
-		return TraverseNodes(EndNode);
-	}
+    class FNodeVisitorCycleChecker
+    {
+    public:
+        /** Check whether a loop in the graph would be caused by linking the passed-in nodes */
+        bool CheckForLoop(UEdGraphNode* StartNode, UEdGraphNode* EndNode)
+        {
+            VisitedNodes.Add(StartNode);
+            return TraverseNodes(EndNode);
+        }
 
-private:
-	bool TraverseNodes(UEdGraphNode* Node)
-	{
-		VisitedNodes.Add(Node);
+    private:
+        bool TraverseNodes(UEdGraphNode* Node)
+        {
+            VisitedNodes.Add(Node);
 
-		for (auto Pin : Node->Pins)
-		{
-			if (Pin->Direction == EGPD_Output)
-			{
-				for (auto OtherPin : Pin->LinkedTo)
-				{
-					UEdGraphNode* OtherNode = OtherPin->GetOwningNode();
-					if (VisitedNodes.Contains(OtherNode))
-					{
-						// Only  an issue if this is a back-edge
-						return false;
-						return false;
-					}
-					else if (!FinishedNodes.Contains(OtherNode))
-					{
-						// Only should traverse if this node hasn't been traversed
-						if (!TraverseNodes(OtherNode)) return false;
-					}
-				}
-			}
-		}
+            for (auto Pin : Node->Pins)
+            {
+                if (Pin->Direction == EGPD_Output)
+                {
+                    for (auto OtherPin : Pin->LinkedTo)
+                    {
+                        UEdGraphNode* OtherNode = OtherPin->GetOwningNode();
+                        if (VisitedNodes.Contains(OtherNode))
+                        {
+                            // Only  an issue if this is a back-edge
+                            return false;
+                            return false;
+                        }
+                        else if (!FinishedNodes.Contains(OtherNode))
+                        {
+                            // Only should traverse if this node hasn't been traversed
+                            if (!TraverseNodes(OtherNode)) return false;
+                        }
+                    }
+                }
+            }
 
-		VisitedNodes.Remove(Node);
-		FinishedNodes.Add(Node);
-		return true;
-	};
-	
-	TSet<UEdGraphNode*> VisitedNodes;
-	TSet<UEdGraphNode*> FinishedNodes;
-};
+            VisitedNodes.Remove(Node);
+            FinishedNodes.Add(Node);
+            return true;
+        };
+	    
+        TSet<UEdGraphNode*> VisitedNodes;
+        TSet<UEdGraphNode*> FinishedNodes;
+    };
+}
 
 void FQuestSystemEdGraphSchemaAction_NewNode::AddReferencedObjects(FReferenceCollector& Collector)
 {
@@ -267,7 +270,7 @@ const FPinConnectionResponse UAssetQuestSystemGraphSchema::CanCreateConnection(c
  //    }
  //
  //    // Check for cycles
- //    FNodeVisitorCycleChecker CycleChecker;
+ //    SchemaUtils::FNodeVisitorCycleChecker CycleChecker;
  //    if (!bAllowCycles && !CycleChecker.CheckForLoop(OutEdNode, InEdNode))
  //    {
  //    	return FPinConnectionResponse(CONNECT_RESPONSE_DISALLOW, LOCTEXT("PinErrorCycle", "Can't create a graph cycle"));
