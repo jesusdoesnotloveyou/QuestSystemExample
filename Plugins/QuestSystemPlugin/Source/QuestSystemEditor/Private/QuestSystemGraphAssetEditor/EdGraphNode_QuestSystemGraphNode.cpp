@@ -26,8 +26,8 @@ void UEdGraphNode_QuestSystemGraphNode::AllocateDefaultPins()
 {
     Super::AllocateDefaultPins();
 	// TO DO: find out how CreatePin method works
-	CreatePin(EGPD_Input, "MultipleNodes", FName(), TEXT("In"));
-	CreatePin(EGPD_Output, "MultipleNodes", FName(), TEXT("Out"));
+	CreatePin(EGPD_Input, UEdGraphSchema_K2::PC_Exec, FName(), TEXT("In"));
+	CreatePin(EGPD_Output, UEdGraphSchema_K2::PC_Exec, FName(), TEXT("Out"));
 }
 
 void UEdGraphNode_QuestSystemGraphNode::AutowireNewNode(UEdGraphPin* FromPin)

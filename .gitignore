@@ -6,5 +6,7 @@ Build/
 Config/
 DerivedDataCache/
 Intermediate/
+Plugins/*/Binaries/
+Plugins/*/Intermediate/
 Saved/
 Script/

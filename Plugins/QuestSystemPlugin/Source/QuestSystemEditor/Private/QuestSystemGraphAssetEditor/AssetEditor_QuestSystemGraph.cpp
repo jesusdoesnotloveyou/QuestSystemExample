@@ -18,6 +18,7 @@
 #include "EditorStyle/Public/EditorStyleSet.h"
 
 #include "QuestSystemGraphAssetEditor/EdGraphNode_QuestSystemGraphNode.h"
+#include "QuestSystemGraphAssetEditor/EdGraphSchema_K2_QuestSystem.h"
 #include "QuestSystemGraphAssetEditor/EdNodeEdge_QuestSystemGraphEdge.h"
 
 DEFINE_LOG_CATEGORY_STATIC(AssetEditr_QuestSystemGraph, All, All);
@@ -275,7 +276,8 @@ void FAssetEditor_QuestSystemGraph::CreateEdGraph()
 		    EditorGraph,
 		    NAME_None,
 		    UEdGraph_QuestSystemGraph::StaticClass(),
-		    UAssetQuestSystemGraphSchema::StaticClass()));
+		    //UAssetQuestSystemGraphSchema::StaticClass()));
+		    UEdGraphSchema_K2_QuestSystem::StaticClass()));
 		EditorGraph->EdGraph->bAllowDeletion = false;
 	}
 }
