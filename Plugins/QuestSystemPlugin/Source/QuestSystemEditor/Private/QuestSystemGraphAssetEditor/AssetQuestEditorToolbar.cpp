@@ -1,13 +1,13 @@
 // Quest System by JDNLY. All Rights Reserved
 
 #include "QuestSystemGraphAssetEditor/AssetQuestEditorToolbar.h"
-#include "QuestSystemGraphAssetEditor/AssetEditor_QuestSystemGraph.h"
+#include "QuestSystemGraphAssetEditor/AssetEditor_QuestSystemEditor.h"
 
 #define LOCTEXT_NAMESPACE "AssetQuestEditorToolbar"
 
 void FAssetQuestEditorToolbar::AddQuestEditorToolbar(TSharedPtr<FExtender> Extender)
 {
-    TSharedPtr<FAssetEditor_QuestSystemGraph> QuestEditorPtr = QuestEditor.Pin();
+    TSharedPtr<FAssetEditor_QuestSystemEditor> QuestEditorPtr = QuestEditor.Pin();
     check(QuestEditorPtr);
 
     TSharedPtr<FExtender> ToolbarExtender = MakeShareable(new FExtender);
@@ -18,7 +18,7 @@ void FAssetQuestEditorToolbar::AddQuestEditorToolbar(TSharedPtr<FExtender> Exten
 
 void FAssetQuestEditorToolbar::FillQuestEditorToolbar(FToolBarBuilder& ToolbarBuilder)
 {
-    TSharedPtr<FAssetEditor_QuestSystemGraph> QuestEditorPtr = QuestEditor.Pin();
+    TSharedPtr<FAssetEditor_QuestSystemEditor> QuestEditorPtr = QuestEditor.Pin();
     check(QuestEditorPtr);
     
     ToolbarBuilder.BeginSection("ExtendToolbarItem");
@@ -29,8 +29,8 @@ void FAssetQuestEditorToolbar::FillQuestEditorToolbar(FToolBarBuilder& ToolbarBu
 
         ToolbarBuilder.AddToolBarButton(
             FUIAction(
-                FExecuteAction::CreateSP(QuestEditorPtr.Get(), &FAssetEditor_QuestSystemGraph::CreateNewNode),
-                FCanExecuteAction::CreateSP(QuestEditorPtr.Get(), &FAssetEditor_QuestSystemGraph::CanCreateNewNode),
+                FExecuteAction::CreateSP(QuestEditorPtr.Get(), &FAssetEditor_QuestSystemEditor::CreateNewNode),
+                FCanExecuteAction::CreateSP(QuestEditorPtr.Get(), &FAssetEditor_QuestSystemEditor::CanCreateNewNode),
                 FIsActionChecked()
             ),
             NAME_None,

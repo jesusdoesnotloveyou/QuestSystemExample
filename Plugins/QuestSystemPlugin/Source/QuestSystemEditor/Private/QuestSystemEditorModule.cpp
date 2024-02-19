@@ -8,20 +8,18 @@
 void FQuestSystemEditorModule::StartupModule()
 {
 	// This code will execute after your module is loaded into memory; the exact timing is specified in the .uplugin file per-module
-
-    // Register
     IAssetTools& AssetToolsModule = FModuleManager::LoadModuleChecked<FAssetToolsModule>("AssetTools").Get();
-    const EAssetTypeCategories::Type AssetCategoryBit = AssetToolsModule.RegisterAdvancedAssetCategory(FName(TEXT("UserDefinedAsset")),
-        LOCTEXT("UserDefinedAssetCategory", "User Defined Asset"));
-    AssetTypeAction = MakeShareable(new FQuestSystemGraphActions(AssetCategoryBit));
-    AssetToolsModule.RegisterAssetTypeActions(AssetTypeAction.ToSharedRef());
-    
-    //QuestSystemGraphActions = MakeShared<FQuestSystemGraphActions>();
-	//FAssetToolsModule::GetModule().Get().RegisterAssetTypeActions(QuestSystemGraphActions.ToSharedRef());
+
+    // Register new Category
+    const EAssetTypeCategories::Type QuestSystemEditorAssetCategoryBit = AssetToolsModule.RegisterAdvancedAssetCategory(FName("Quest System Editor"),
+        LOCTEXT("FQuestSystemEditorModule", "Quest System Editor"));
+
+    QuestSystemEditorAssetAction = MakeShareable(new FQuestSystemGraphActions(QuestSystemEditorAssetCategoryBit));
+    AssetToolsModule.RegisterAssetTypeActions(QuestSystemEditorAssetAction.ToSharedRef());
     
     // Register the factory for creating nodes
-	QuestSystemGraphNodeFactory = MakeShareable(new FQuestSystemGraphNodeFactory());
-	FEdGraphUtilities::RegisterVisualNodeFactory(QuestSystemGraphNodeFactory);
+	QuestSystemEditorNodeFactory = MakeShareable(new FQuestSystemGraphNodeFactory());
+	FEdGraphUtilities::RegisterVisualNodeFactory(QuestSystemEditorNodeFactory);
 
     // Register the factory for creating pins
 	//QuestSystemGraphNodePinFactory = MakeShareable(new FQuestSystemGraphNodePinFactory());
@@ -34,10 +32,10 @@ void FQuestSystemEditorModule::ShutdownModule()
 	// we call this function before unloading the module.
 
     if (!FModuleManager::Get().IsModuleLoaded("AssetTools")) return;
-		FAssetToolsModule::GetModule().Get().UnregisterAssetTypeActions(AssetTypeAction.ToSharedRef());
+		FAssetToolsModule::GetModule().Get().UnregisterAssetTypeActions(QuestSystemEditorAssetAction.ToSharedRef());
 
     // Unregister the nodes factory
-	FEdGraphUtilities::UnregisterVisualNodeFactory(QuestSystemGraphNodeFactory);
+	FEdGraphUtilities::UnregisterVisualNodeFactory(QuestSystemEditorNodeFactory);
     // Unregister the pins factory
 	//FEdGraphUtilities::RegisterVisualPinFactory(QuestSystemGraphNodePinFactory);
 }

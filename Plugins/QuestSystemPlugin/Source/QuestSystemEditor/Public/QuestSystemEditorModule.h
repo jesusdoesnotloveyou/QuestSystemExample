@@ -13,12 +13,16 @@ class FQuestSystemEditorModule : public IModuleInterface
 {
 public:
 	/** IModuleInterface implementation */
+    
+    /* Called when the module is loaded */
 	virtual void StartupModule() override;
+
+    /* Called when the module is unloaded */
 	virtual void ShutdownModule() override;
 
 private:
-	TSharedPtr<class FQuestSystemGraphActions> AssetTypeAction;
-	
-	TSharedPtr<class FQuestSystemGraphNodeFactory> QuestSystemGraphNodeFactory;
-	TSharedPtr<class FQuestSystemGraphNodePinFactory> QuestSystemGraphNodePinFactory;
+ 	TSharedPtr<class FQuestSystemGraphActions> QuestSystemEditorAssetAction;
+    
+	TSharedPtr<class FQuestSystemGraphNodeFactory> QuestSystemEditorNodeFactory;
+	TSharedPtr<class FQuestSystemGraphNodePinFactory> QuestSystemEditorNodePinFactory;
 };

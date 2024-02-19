@@ -12,9 +12,11 @@ public:
 private:
 	EAssetTypeCategories::Type AssetTypeCategory;
 public:
+    // IAssetTypeActions interface
 	virtual FText GetName() const override;
 	virtual FColor GetTypeColor() const override;
 	virtual UClass* GetSupportedClass() const override;
 	virtual uint32 GetCategories() override;
 	virtual void OpenAssetEditor(const TArray<UObject*>& InObjects, TSharedPtr<class IToolkitHost> EditWithinLevelEditor = TSharedPtr<IToolkitHost>()) override;
+    // End of IAssetTypeActions interface
 };

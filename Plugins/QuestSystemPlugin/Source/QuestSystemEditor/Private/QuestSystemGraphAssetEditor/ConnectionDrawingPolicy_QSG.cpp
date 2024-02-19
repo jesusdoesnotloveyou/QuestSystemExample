@@ -3,7 +3,7 @@
 #include "QuestSystemGraphAssetEditor/ConnectionDrawingPolicy_QSG.h"
 
 #include "QuestSystemGraphAssetEditor/EdGraphNode_QuestSystemGraphNode.h"
-#include "QuestSystemGraphAssetEditor/EdNodeEdge_QuestSystemGraphEdge.h"
+#include "QuestSystemGraphAssetEditor/EdNode_QuestSystemGraphEdge.h"
 
 FConnectionDrawingPolicy_QSG::FConnectionDrawingPolicy_QSG(int32 InBackLayerID, int32 InFrontLayerID, float ZoomFactor, const FSlateRect& InClippingRect, FSlateWindowElementList& InDrawElements, UEdGraph* InGraphObj)
     : FConnectionDrawingPolicy(InBackLayerID, InFrontLayerID, ZoomFactor, InClippingRect, InDrawElements)
@@ -77,7 +77,7 @@ void FConnectionDrawingPolicy_QSG::DetermineLinkGeometry(
     FArrangedWidget *&StartWidgetGeometry,
     FArrangedWidget *&EndWidgetGeometry)
 {
-    if (UEdNodeEdge_QuestSystemGraphEdge* EdgeNode = Cast<UEdNodeEdge_QuestSystemGraphEdge>(InputPin->GetOwningNode()))
+    if (UEdNode_QuestSystemGraphEdge* EdgeNode = Cast<UEdNode_QuestSystemGraphEdge>(InputPin->GetOwningNode()))
     	{
     		UEdGraphNode_QuestSystemGraphNode* Start = EdgeNode->GetStartNode();
     		UEdGraphNode_QuestSystemGraphNode* End = EdgeNode->GetEndNode();

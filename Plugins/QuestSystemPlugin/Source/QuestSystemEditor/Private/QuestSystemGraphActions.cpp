@@ -2,14 +2,12 @@
 
 #include "QuestSystemGraphActions.h"
 #include "QuestSystemGraph.h"
-#include "QuestSystemGraphAssetEditor/AssetEditor_QuestSystemGraph.h"
+#include "QuestSystemGraphAssetEditor/AssetEditor_QuestSystemEditor.h"
 
-class UQuestSystemGraph;
+#define LOCTEXT_NAMESPACE "QuestSystemGraphActions"
 
 FQuestSystemGraphActions::FQuestSystemGraphActions(EAssetTypeCategories::Type InAssetCategory)
-{
-    AssetTypeCategory = InAssetCategory;
-}
+    : AssetTypeCategory(InAssetCategory) {}
 
 UClass* FQuestSystemGraphActions::GetSupportedClass() const
 {
@@ -18,7 +16,7 @@ UClass* FQuestSystemGraphActions::GetSupportedClass() const
 
 FText FQuestSystemGraphActions::GetName() const
 {
-	return INVTEXT("Quest Editor");
+	return LOCTEXT("QuestSystemGraphActions", "Quest Editor");
 }
 
 FColor FQuestSystemGraphActions::GetTypeColor() const
@@ -39,9 +37,11 @@ void FQuestSystemGraphActions::OpenAssetEditor(const TArray<UObject*>& InObjects
 	{
 		if (UQuestSystemGraph* Graph = Cast<UQuestSystemGraph>(*ObjIt))
 		{
-			TSharedRef<FAssetEditor_QuestSystemGraph> NewGraphEditor(new FAssetEditor_QuestSystemGraph());
-			NewGraphEditor->InitQuestSystemAssetEditor(Mode, EditWithinLevelEditor, Graph);
+			TSharedRef<FAssetEditor_QuestSystemEditor> NewGraphEditor(new FAssetEditor_QuestSystemEditor());
+			NewGraphEditor->InitQuestSystemEditor(Mode, EditWithinLevelEditor, Graph);
 		}
 	}
 	//FAssetTypeActions_Base::OpenAssetEditor(InObjects, EditWithinLevelEditor);
 }
+
+#undef LOCTEXT_NAMESPACE

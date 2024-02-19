@@ -8,7 +8,7 @@
 #include "ToolMenus.h"
 #include "QuestSystemGraphAssetEditor/EdGraph_QuestSystemGraph.h"
 #include "QuestSystemGraphAssetEditor/EdGraphNode_QuestSystemGraphNode.h"
-#include "QuestSystemGraphAssetEditor/EdNodeEdge_QuestSystemGraphEdge.h"
+#include "QuestSystemGraphAssetEditor/EdNode_QuestSystemGraphEdge.h"
 #include "Framework/Commands/GenericCommands.h"
 #include "Classes/EditorStyleSettings.h"
 #include "QuestSystemGraphAssetEditor/ConnectionDrawingPolicy_QSG.h"
@@ -297,7 +297,7 @@ bool UEdGraphSchema_K2_QuestSystem::TryCreateConnection(UEdGraphPin* A, UEdGraph
     for (UEdGraphPin* TestPin : NodeA->GetOutputPin()->LinkedTo)
     {
         UEdGraphNode* ChildNode = TestPin->GetOwningNode();
-        if (UEdNodeEdge_QuestSystemGraphEdge* EdNode_Edge = Cast<UEdNodeEdge_QuestSystemGraphEdge>(ChildNode))
+        if (UEdNode_QuestSystemGraphEdge* EdNode_Edge = Cast<UEdNode_QuestSystemGraphEdge>(ChildNode))
         {
             ChildNode = EdNode_Edge->GetEndNode();
         }

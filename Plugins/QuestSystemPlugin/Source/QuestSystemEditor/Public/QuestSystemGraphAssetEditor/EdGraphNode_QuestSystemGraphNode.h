@@ -9,7 +9,7 @@
 class UQuestSystemGraphNode;
 class UEdGraph_QuestSystemGraph;
 class UAssetQuestSystemGraphSchema;
-//class UEdNodeEdge_QuestSystemGraphEdge;
+//class UEdNode_QuestSystemGraphEdge;
 
 UCLASS()
 class QUESTSYSTEMEDITOR_API UEdGraphNode_QuestSystemGraphNode : public UEdGraphNode
