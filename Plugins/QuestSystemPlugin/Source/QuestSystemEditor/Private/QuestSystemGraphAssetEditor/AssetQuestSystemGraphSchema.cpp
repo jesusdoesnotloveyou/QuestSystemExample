@@ -45,7 +45,6 @@ namespace SchemaUtils
                         {
                             // Only  an issue if this is a back-edge
                             return false;
-                            return false;
                         }
                         else if (!FinishedNodes.Contains(OtherNode))
                         {
@@ -66,23 +65,21 @@ namespace SchemaUtils
     };
 }
 
-void FQuestSystemEdGraphSchemaAction_NewNode::AddReferencedObjects(FReferenceCollector& Collector)
+void FEdGraphSchemaAction_QuestSystemEditor_NewNode::AddReferencedObjects(FReferenceCollector& Collector)
 {
 	FEdGraphSchemaAction::AddReferencedObjects(Collector);
 	Collector.AddReferencedObject(NodeTemplate);
 }
 
-UEdGraphNode* FQuestSystemEdGraphSchemaAction_NewNode::PerformAction(class UEdGraph* ParentGraph, UEdGraphPin* FromPin, const FVector2D Location, bool bSelectNewNode)
+UEdGraphNode* FEdGraphSchemaAction_QuestSystemEditor_NewNode::PerformAction(class UEdGraph* ParentGraph, UEdGraphPin* FromPin, const FVector2D Location, bool bSelectNewNode)
 {
 	UEdGraphNode* ResultNode = nullptr;
 	// If there is a template, we actually use it
 	if (NodeTemplate)
     {
-    	const FScopedTransaction Transaction(LOCTEXT("AddNewNode", "Add New Node"));
+    	const FScopedTransaction Transaction(LOCTEXT("QuestSystemEditorNewNode", "Quest System Editor: New Node"));
     	ParentGraph->Modify();
     	if (FromPin) FromPin->Modify();
-
-    	//NodeTemplate->SetFlags(RF_Transactional);
 	    
 	    // set outer to be the graph so it doesn't go away
     	NodeTemplate->Rename(nullptr, ParentGraph);
@@ -90,30 +87,27 @@ UEdGraphNode* FQuestSystemEdGraphSchemaAction_NewNode::PerformAction(class UEdGr
 	    
     	NodeTemplate->CreateNewGuid();
     	NodeTemplate->PostPlacedNewNode();
+	    NodeTemplate->AllocateDefaultPins();
+	    NodeTemplate->AutowireNewNode(FromPin);
 
     	NodeTemplate->NodePosX = Location.X;
     	NodeTemplate->NodePosY = Location.Y;
 	    //ResultNode->SnapToGrid(GetDefault<UEditorStyleSettings>()->GridSnapSize);
-
-	    // there is mistake begins somewhere from 91 line  
+	    
     	NodeTemplate->QuestSystemGraphNode->SetFlags(RF_Transactional);
-	    // might be here too
-	    NodeTemplate->AllocateDefaultPins();
-	    NodeTemplate->AutowireNewNode(FromPin);
-
+	    NodeTemplate->SetFlags(RF_Transactional);
+	        
     	ResultNode = NodeTemplate;
     }
-
     return ResultNode;
 }
 
-UEdGraphNode* FQuestSystemEdGraphSchemaAction_NewNode::PerformAction(class UEdGraph* ParentGraph, TArray<UEdGraphPin*>& FromPins, const FVector2D Location, bool bSelectNewNode)
+UEdGraphNode* FEdGraphSchemaAction_QuestSystemEditor_NewNode::PerformAction(class UEdGraph* ParentGraph, TArray<UEdGraphPin*>& FromPins, const FVector2D Location, bool bSelectNewNode)
 {
     UEdGraphNode* ResultNode;
     if (FromPins.Num() > 0)
     {
         ResultNode = PerformAction(ParentGraph, FromPins[0], Location);
-
         // Try autowiring the rest of the pins
         for (int32 Index = 1; Index < FromPins.Num(); ++Index)
         {
@@ -124,14 +118,54 @@ UEdGraphNode* FQuestSystemEdGraphSchemaAction_NewNode::PerformAction(class UEdGr
     {
         ResultNode = PerformAction(ParentGraph, nullptr, Location, bSelectNewNode);
     }
-
     return ResultNode;
+}
+
+UEdGraphNode* FEdGraphSchemaAction_QuestSystemEditor_NewEdge::PerformAction(class UEdGraph* ParentGraph, UEdGraphPin* FromPin, const FVector2D Location, bool bSelectNewNode /*= true*/)
+{
+    UEdGraphNode* ResultNode = nullptr;
+    // If there is a template, we actually use it
+    if (NodeTemplate)
+    {
+        const FScopedTransaction Transaction(LOCTEXT("QuestSystemEditorNewEdge", "Quest System Editor: New Edge"));
+        ParentGraph->Modify();
+        if (FromPin) FromPin->Modify();
+	    
+        // set outer to be the graph so it doesn't go away
+        NodeTemplate->Rename(nullptr, ParentGraph);
+        ParentGraph->AddNode(NodeTemplate, true, bSelectNewNode);
+	    
+        NodeTemplate->CreateNewGuid();
+        NodeTemplate->PostPlacedNewNode();
+        NodeTemplate->AllocateDefaultPins();
+        NodeTemplate->AutowireNewNode(FromPin);
+
+        NodeTemplate->NodePosX = Location.X;
+        NodeTemplate->NodePosY = Location.Y;
+        //ResultNode->SnapToGrid(GetDefault<UEditorStyleSettings>()->GridSnapSize);
+	    
+        NodeTemplate->QuestSystemGraphEdge->SetFlags(RF_Transactional);
+        NodeTemplate->SetFlags(RF_Transactional);
+	        
+        ResultNode = NodeTemplate;
+    }
+    return ResultNode;
+}
+
+// UEdGraphNode* FEdGraphSchemaAction_QuestSystemEditor_NewEdge::PerformAction(class UEdGraph* ParentGraph, TArray<UEdGraphPin*>& FromPins, const FVector2D Location, bool bSelectNewNode /*= true*/)
+// {
+//     
+// }
+
+void FEdGraphSchemaAction_QuestSystemEditor_NewEdge::AddReferencedObjects(FReferenceCollector& Collector)
+{
+    FEdGraphSchemaAction::AddReferencedObjects(Collector);
+    Collector.AddReferencedObject(NodeTemplate);
 }
 
 /////////////////////////////////////////////////////
 // UEdGraphSchema
 
-//TODO: 
 void UAssetQuestSystemGraphSchema::GetGraphContextActions(FGraphContextMenuBuilder& ContextMenuBuilder) const
 {
 	UQuestSystemGraph* Graph = CastChecked<UQuestSystemGraph>(ContextMenuBuilder.CurrentGraph->GetOuter());
@@ -154,11 +188,11 @@ void UAssetQuestSystemGraphSchema::GetGraphContextActions(FGraphContextMenuBuild
 
 	if (!Graph->NodeType->HasAnyClassFlags(CLASS_Abstract))
 	{
-		// TSharedPtr<FQuestSystemEdGraphSchemaAction_NewNode> TestNewNodeAction = AddNewNodeAction(ContextMenuBuilder, LOCTEXT("QuestSystemGraphNodeAction", "Quest System Graph Node"), Desc, FText());
+		// TSharedPtr<FEdGraphSchemaAction_QuestSystemEditor_NewNode> TestNewNodeAction = AddNewNodeAction(ContextMenuBuilder, LOCTEXT("QuestSystemGraphNodeAction", "Quest System Graph Node"), Desc, FText());
 	    // TestNewNodeAction->NodeTemplate = NewObject<UEdGraphNode_QuestSystemGraphNode>(ContextMenuBuilder.OwnerOfTemporaries);
 	    // TestNewNodeAction->NodeTemplate->QuestSystemGraphNode = NewObject<UQuestSystemGraphNode>(TestNewNodeAction->NodeTemplate, Graph->NodeType);
 		// TestNewNodeAction->NodeTemplate->QuestSystemGraphNode->Graph = Graph;
-		TSharedPtr<FQuestSystemEdGraphSchemaAction_NewNode> NewNodeAction(new FQuestSystemEdGraphSchemaAction_NewNode(LOCTEXT("QuestSystemGraphNodeAction", "Quest System Graph Node"), Desc, AddToolTip, 0));
+		TSharedPtr<FEdGraphSchemaAction_QuestSystemEditor_NewNode> NewNodeAction(new FEdGraphSchemaAction_QuestSystemEditor_NewNode(LOCTEXT("QuestSystemGraphNodeAction", "Quest System Graph Node"), Desc, AddToolTip, 0));
 		NewNodeAction->NodeTemplate = NewObject<UEdGraphNode_QuestSystemGraphNode>(ContextMenuBuilder.OwnerOfTemporaries);
 		NewNodeAction->NodeTemplate->QuestSystemGraphNode = NewObject<UQuestSystemGraphNode>(NewNodeAction->NodeTemplate, Graph->NodeType);
 		NewNodeAction->NodeTemplate->QuestSystemGraphNode->Graph = Graph;
@@ -188,11 +222,11 @@ void UAssetQuestSystemGraphSchema::GetGraphContextActions(FGraphContextMenuBuild
 				Desc = FText::FromString(Title);
 			}
 
-		    // TSharedPtr<FQuestSystemEdGraphSchemaAction_NewNode> TestNewNodeAction = AddNewNodeAction(ContextMenuBuilder, LOCTEXT("QuestSystemGraphNodeAction", "Quest System Graph Node"), Desc, FText());
+		    // TSharedPtr<FEdGraphSchemaAction_QuestSystemEditor_NewNode> TestNewNodeAction = AddNewNodeAction(ContextMenuBuilder, LOCTEXT("QuestSystemGraphNodeAction", "Quest System Graph Node"), Desc, FText());
 		    // TestNewNodeAction->NodeTemplate = NewObject<UEdGraphNode_QuestSystemGraphNode>(ContextMenuBuilder.OwnerOfTemporaries);
 		    // TestNewNodeAction->NodeTemplate->QuestSystemGraphNode = NewObject<UQuestSystemGraphNode>(TestNewNodeAction->NodeTemplate, Graph->NodeType);
 		    // TestNewNodeAction->NodeTemplate->QuestSystemGraphNode->Graph = Graph;
-			TSharedPtr<FQuestSystemEdGraphSchemaAction_NewNode> Action(new FQuestSystemEdGraphSchemaAction_NewNode(LOCTEXT("QuestSystemGraphNodeAction", "Quest System Graph Node"), Desc, AddToolTip, 0));
+			TSharedPtr<FEdGraphSchemaAction_QuestSystemEditor_NewNode> Action(new FEdGraphSchemaAction_QuestSystemEditor_NewNode(LOCTEXT("QuestSystemGraphNodeAction", "Quest System Graph Node"), Desc, AddToolTip, 0));
 			Action->NodeTemplate = NewObject<UEdGraphNode_QuestSystemGraphNode>(ContextMenuBuilder.OwnerOfTemporaries);
 			Action->NodeTemplate->QuestSystemGraphNode = NewObject<UQuestSystemGraphNode>(Action->NodeTemplate, NodeType);
 			Action->NodeTemplate->QuestSystemGraphNode->Graph = Graph;
@@ -384,9 +418,9 @@ void UAssetQuestSystemGraphSchema::BreakSinglePinLink(UEdGraphPin* SourcePin, UE
     Super::BreakSinglePinLink(SourcePin, TargetPin);
 }
 
-TSharedPtr<FQuestSystemEdGraphSchemaAction_NewNode> UAssetQuestSystemGraphSchema::AddNewNodeAction(FGraphActionListBuilderBase& ContextMenuBuilder, const FText& Category, const FText& MenuDesc, const FText& Tooltip)
+TSharedPtr<FEdGraphSchemaAction_QuestSystemEditor_NewNode> UAssetQuestSystemGraphSchema::AddNewNodeAction(FGraphActionListBuilderBase& ContextMenuBuilder, const FText& Category, const FText& MenuDesc, const FText& Tooltip)
 {
-    const auto NewAction = MakeShareable<FQuestSystemEdGraphSchemaAction_NewNode>(new FQuestSystemEdGraphSchemaAction_NewNode(Category, MenuDesc, Tooltip, 0));
+    const auto NewAction = MakeShareable<FEdGraphSchemaAction_QuestSystemEditor_NewNode>(new FEdGraphSchemaAction_QuestSystemEditor_NewNode(Category, MenuDesc, Tooltip, 0));
     ContextMenuBuilder.AddAction(NewAction);
     return NewAction;
 }

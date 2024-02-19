@@ -278,8 +278,7 @@ void FAssetEditor_QuestSystemEditor::CreateEdGraph()
 		    EditorGraph,
 		    NAME_None,
 		    UEdGraph_QuestSystemGraph::StaticClass(),
-		    //UAssetQuestSystemGraphSchema::StaticClass()));
-		    UEdGraphSchema_K2_QuestSystem::StaticClass()));
+		    UAssetQuestSystemGraphSchema::StaticClass()));
 		EditorGraph->EdGraph->bAllowDeletion = false;
 	}
 }
