@@ -8,7 +8,7 @@
 
 class UQuestSystemGraphNode;
 class UEdGraph_QuestSystemGraph;
-class UAssetQuestSystemGraphSchema;
+//class UAssetQuestSystemGraphSchema;
 //class UEdNode_QuestSystemGraphEdge;
 
 UCLASS()

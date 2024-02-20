@@ -8,6 +8,10 @@
 #include "EdGraph/EdGraphSchema.h"
 #include "AssetQuestSystemGraphSchema.generated.h"
 
+class UEdGraphPin;
+class UEdGraphNode_QuestSystemGraphNode;
+class UEdNode_QuestSystemGraphEdge;
+
 /** Action to add a node to the graph */
 USTRUCT()
 struct QUESTSYSTEMEDITOR_API FEdGraphSchemaAction_QuestSystemEditor_NewNode : public FEdGraphSchemaAction
@@ -79,9 +83,10 @@ class QUESTSYSTEMEDITOR_API UAssetQuestSystemGraphSchema : public UEdGraphSchema
 	GENERATED_BODY()
 public:
 	//~ Begin EdGraphSchema Interface
-    
-	// virtual void CreateDefaultNodesForGraph(UEdGraph& Graph) const override;
+	virtual void CreateDefaultNodesForGraph(UEdGraph& Graph) const override;
+    void GetBreakLinkToSubMenuActions(UToolMenu* Menu, UEdGraphPin* InGraphPin);
 	virtual void GetGraphContextActions(FGraphContextMenuBuilder& ContextMenuBuilder) const override;
+    virtual EGraphType GetGraphType(const UEdGraph *TestEdGraph) const override;
 	virtual void GetContextMenuActions(UToolMenu* Menu, UGraphNodeContextMenuContext* Context) const override;
 	virtual const FPinConnectionResponse CanCreateConnection(const UEdGraphPin* A, const UEdGraphPin* B) const override;
 	virtual const FPinConnectionResponse CanMergeNodes(const UEdGraphNode* A, const UEdGraphNode* B) const override;

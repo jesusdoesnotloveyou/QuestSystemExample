@@ -7,13 +7,13 @@
 
 class UEdGraph;
 
-class QUESTSYSTEMEDITOR_API FConnectionDrawingPolicy_QSG : public FConnectionDrawingPolicy
+class QUESTSYSTEMEDITOR_API FConnectionDrawingPolicy_QuestSystemEditor : public FConnectionDrawingPolicy
 {
 protected:
     UEdGraph* EdGraphObj;
     TMap<UEdGraphNode*, int32> NodeWidgetMap;
 public:
-	FConnectionDrawingPolicy_QSG(int32 InBackLayerID, int32 InFrontLayerID, float ZoomFactor, const FSlateRect& InClippingRect, FSlateWindowElementList& InDrawElements, UEdGraph* InGraphObj);
+	FConnectionDrawingPolicy_QuestSystemEditor(int32 InBackLayerID, int32 InFrontLayerID, float ZoomFactor, const FSlateRect& InClippingRect, FSlateWindowElementList& InDrawElements, UEdGraph* InGraphObj);
     // FConnectionDrawingPolicy interface
     virtual void DetermineWiringStyle(UEdGraphPin* OutputPin, UEdGraphPin* InputPin, /*inout*/ FConnectionParams& Params) override;
     virtual void Draw(TMap<TSharedRef<SWidget>, FArrangedWidget> &InPinGeometries, FArrangedChildren &ArrangedNodes) override;

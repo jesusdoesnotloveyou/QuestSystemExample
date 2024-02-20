@@ -11,7 +11,7 @@
 #include "QuestSystemGraphAssetEditor/EdNode_QuestSystemGraphEdge.h"
 #include "Framework/Commands/GenericCommands.h"
 #include "Classes/EditorStyleSettings.h"
-#include "QuestSystemGraphAssetEditor/ConnectionDrawingPolicy_QSG.h"
+#include "QuestSystemGraphAssetEditor/ConnectionDrawingPolicy_QuestSystemEditor.h"
 
 #define LOCTEXT_NAMESPACE "UEdGraphSchema_K2_QuestSystem"
 
@@ -317,7 +317,7 @@ bool UEdGraphSchema_K2_QuestSystem::TryCreateConnection(UEdGraphPin* A, UEdGraph
 
 class FConnectionDrawingPolicy* UEdGraphSchema_K2_QuestSystem::CreateConnectionDrawingPolicy(int32 InBackLayerID, int32 InFrontLayerID, float InZoomFactor, const FSlateRect &InClippingRect, FSlateWindowElementList &InDrawElements, UEdGraph *InGraphObj) const
 {
-     return new FConnectionDrawingPolicy_QSG(InBackLayerID, InFrontLayerID, InZoomFactor, InClippingRect, InDrawElements, InGraphObj);
+     return new FConnectionDrawingPolicy_QuestSystemEditor(InBackLayerID, InFrontLayerID, InZoomFactor, InClippingRect, InDrawElements, InGraphObj);
 }
 
 FLinearColor UEdGraphSchema_K2_QuestSystem::GetPinTypeColor(const FEdGraphPinType& PinType) const

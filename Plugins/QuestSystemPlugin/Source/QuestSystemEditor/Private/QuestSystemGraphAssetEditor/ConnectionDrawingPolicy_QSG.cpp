@@ -1,16 +1,16 @@
 // Quest System by JDNLY. All Rights Reserved
 
-#include "QuestSystemGraphAssetEditor/ConnectionDrawingPolicy_QSG.h"
+#include "QuestSystemGraphAssetEditor/ConnectionDrawingPolicy_QuestSystemEditor.h"
 
 #include "QuestSystemGraphAssetEditor/EdGraphNode_QuestSystemGraphNode.h"
 #include "QuestSystemGraphAssetEditor/EdNode_QuestSystemGraphEdge.h"
 
-FConnectionDrawingPolicy_QSG::FConnectionDrawingPolicy_QSG(int32 InBackLayerID, int32 InFrontLayerID, float ZoomFactor, const FSlateRect& InClippingRect, FSlateWindowElementList& InDrawElements, UEdGraph* InGraphObj)
+FConnectionDrawingPolicy_QuestSystemEditor::FConnectionDrawingPolicy_QuestSystemEditor(int32 InBackLayerID, int32 InFrontLayerID, float ZoomFactor, const FSlateRect& InClippingRect, FSlateWindowElementList& InDrawElements, UEdGraph* InGraphObj)
     : FConnectionDrawingPolicy(InBackLayerID, InFrontLayerID, ZoomFactor, InClippingRect, InDrawElements)
     , EdGraphObj(InGraphObj) { }
 
 /** Give specific editor modes a chance to highlight this connection or darken non-interesting connections */
-void FConnectionDrawingPolicy_QSG::DetermineWiringStyle(UEdGraphPin* OutputPin, UEdGraphPin* InputPin, /*inout*/ FConnectionParams& Params)
+void FConnectionDrawingPolicy_QuestSystemEditor::DetermineWiringStyle(UEdGraphPin* OutputPin, UEdGraphPin* InputPin, /*inout*/ FConnectionParams& Params)
 {
     Params.AssociatedPin1 = OutputPin;
     Params.AssociatedPin2 = InputPin;
@@ -23,7 +23,7 @@ void FConnectionDrawingPolicy_QSG::DetermineWiringStyle(UEdGraphPin* OutputPin, 
     }
 }
 
-void FConnectionDrawingPolicy_QSG::Draw(TMap<TSharedRef<SWidget>, FArrangedWidget>& InPinGeometries, FArrangedChildren& ArrangedNodes)
+void FConnectionDrawingPolicy_QuestSystemEditor::Draw(TMap<TSharedRef<SWidget>, FArrangedWidget>& InPinGeometries, FArrangedChildren& ArrangedNodes)
 {
     NodeWidgetMap.Empty();
     for (int32 NodeIndex = 0; NodeIndex < ArrangedNodes.Num(); ++NodeIndex)
@@ -36,17 +36,17 @@ void FConnectionDrawingPolicy_QSG::Draw(TMap<TSharedRef<SWidget>, FArrangedWidge
     FConnectionDrawingPolicy::Draw(InPinGeometries, ArrangedNodes);
 }
 
-void FConnectionDrawingPolicy_QSG::DrawSplineWithArrow(const FGeometry& StartGeom, const FGeometry& EndGeom, const FConnectionParams& Params)
+void FConnectionDrawingPolicy_QuestSystemEditor::DrawSplineWithArrow(const FGeometry& StartGeom, const FGeometry& EndGeom, const FConnectionParams& Params)
 {
     FConnectionDrawingPolicy::DrawSplineWithArrow(StartGeom, EndGeom, Params);
 }
 
-void FConnectionDrawingPolicy_QSG::DrawSplineWithArrow(const FVector2D& StartPoint, const FVector2D& EndPoint, const FConnectionParams& Params)
+void FConnectionDrawingPolicy_QuestSystemEditor::DrawSplineWithArrow(const FVector2D& StartPoint, const FVector2D& EndPoint, const FConnectionParams& Params)
 {
     FConnectionDrawingPolicy::DrawSplineWithArrow(StartPoint, EndPoint, Params);
 }
 
-void FConnectionDrawingPolicy_QSG::DrawPreviewConnector(const FGeometry& PinGeometry, const FVector2D& StartPoint, const FVector2D& EndPoint, UEdGraphPin* Pin)
+void FConnectionDrawingPolicy_QuestSystemEditor::DrawPreviewConnector(const FGeometry& PinGeometry, const FVector2D& StartPoint, const FVector2D& EndPoint, UEdGraphPin* Pin)
 {
     FConnectionParams Params;
     DetermineWiringStyle(Pin, nullptr, /*inout*/ Params);
@@ -61,7 +61,7 @@ void FConnectionDrawingPolicy_QSG::DrawPreviewConnector(const FGeometry& PinGeom
     }
 }
 
-FVector2D FConnectionDrawingPolicy_QSG::ComputeSplineTangent(const FVector2D &Start, const FVector2D &End) const
+FVector2D FConnectionDrawingPolicy_QuestSystemEditor::ComputeSplineTangent(const FVector2D &Start, const FVector2D &End) const
 {
     const FVector2D Delta = End - Start;
     const FVector2D NormDelta = Delta.GetSafeNormal();
@@ -69,7 +69,7 @@ FVector2D FConnectionDrawingPolicy_QSG::ComputeSplineTangent(const FVector2D &St
     return NormDelta;
 }
 
-void FConnectionDrawingPolicy_QSG::DetermineLinkGeometry(
+void FConnectionDrawingPolicy_QuestSystemEditor::DetermineLinkGeometry(
     FArrangedChildren &ArrangedNodes,
     TSharedRef<SWidget> &OutputPinWidget,
     UEdGraphPin *OutputPin,
@@ -104,7 +104,7 @@ void FConnectionDrawingPolicy_QSG::DetermineLinkGeometry(
     	}
 }
 
-void FConnectionDrawingPolicy_QSG::DrawConnection(int32 LayerId, const FVector2D& Start, const FVector2D& End, const FConnectionParams& Params)
+void FConnectionDrawingPolicy_QuestSystemEditor::DrawConnection(int32 LayerId, const FVector2D& Start, const FVector2D& End, const FConnectionParams& Params)
 {
     FConnectionDrawingPolicy::DrawConnection(LayerId, Start, End, Params);
 }
