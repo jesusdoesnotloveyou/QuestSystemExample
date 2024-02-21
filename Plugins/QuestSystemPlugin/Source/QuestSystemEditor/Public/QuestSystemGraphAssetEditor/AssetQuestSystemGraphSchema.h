@@ -4,13 +4,17 @@
 
 #include "CoreMinimal.h"
 #include "EdGraphNode_QuestSystemGraphNode.h"
+#include "EdNode_QuestSystemGraphEdge.h"
 #include "EdGraph/EdGraphSchema.h"
-
 #include "AssetQuestSystemGraphSchema.generated.h"
 
-// Action to add a node to the graph
+class UEdGraphPin;
+class UEdGraphNode_QuestSystemGraphNode;
+class UEdNode_QuestSystemGraphEdge;
+
+/** Action to add a node to the graph */
 USTRUCT()
-struct QUESTSYSTEMEDITOR_API FQuestSystemEdGraphSchemaAction_NewNode : public FEdGraphSchemaAction
+struct QUESTSYSTEMEDITOR_API FEdGraphSchemaAction_QuestSystemEditor_NewNode : public FEdGraphSchemaAction
 {
 	GENERATED_USTRUCT_BODY()
     
@@ -18,11 +22,11 @@ struct QUESTSYSTEMEDITOR_API FQuestSystemEdGraphSchemaAction_NewNode : public FE
     UPROPERTY()
 	class UEdGraphNode_QuestSystemGraphNode* NodeTemplate;
 
-	FQuestSystemEdGraphSchemaAction_NewNode()
+	FEdGraphSchemaAction_QuestSystemEditor_NewNode()
     : FEdGraphSchemaAction()
     , NodeTemplate(nullptr) {}
     
-	FQuestSystemEdGraphSchemaAction_NewNode(FText InNodeCategory, FText InMenuDesc, FText InToolTip, const int32 InGrouping)
+	FEdGraphSchemaAction_QuestSystemEditor_NewNode(FText InNodeCategory, FText InMenuDesc, FText InToolTip, const int32 InGrouping)
 	: FEdGraphSchemaAction(MoveTemp(InNodeCategory), MoveTemp(InMenuDesc), MoveTemp(InToolTip), InGrouping)
     , NodeTemplate(nullptr) {}
 
@@ -32,13 +36,45 @@ struct QUESTSYSTEMEDITOR_API FQuestSystemEdGraphSchemaAction_NewNode : public FE
 	virtual void AddReferencedObjects(FReferenceCollector& Collector) override;
     // End of FEdGraphSchemaAction interface
 
-    template <typename NodeType>
-    static NodeType* SpawnNodeFromTemplate(class UEdGraph* ParentGraph, NodeType* InTemplateNode, const FVector2D Location)
-    {
-        FQuestSystemEdGraphSchemaAction_NewNode Action;
-        Action.NodeTemplate = InTemplateNode;
-        return Cast<NodeType>(Action.PerformAction(ParentGraph, nullptr, Location));
-    }
+    // template <typename NodeType>
+    // static NodeType* SpawnNodeFromTemplate(class UEdGraph* ParentGraph, NodeType* InTemplateNode, const FVector2D Location)
+    // {
+    //     FEdGraphSchemaAction_QuestSystemEditor_NewNode Action;
+    //     Action.NodeTemplate = InTemplateNode;
+    //     return Cast<NodeType>(Action.PerformAction(ParentGraph, nullptr, Location));
+    // }
+};
+
+USTRUCT()
+struct QUESTSYSTEMEDITOR_API FEdGraphSchemaAction_QuestSystemEditor_NewEdge : public FEdGraphSchemaAction
+{
+	GENERATED_USTRUCT_BODY()
+    
+    /** Template of node we want to create */
+    UPROPERTY()
+	UEdNode_QuestSystemGraphEdge* NodeTemplate;
+
+	FEdGraphSchemaAction_QuestSystemEditor_NewEdge()
+    : FEdGraphSchemaAction()
+    , NodeTemplate(nullptr) {}
+    
+	FEdGraphSchemaAction_QuestSystemEditor_NewEdge(FText InNodeCategory, FText InMenuDesc, FText InToolTip, const int32 InGrouping)
+	: FEdGraphSchemaAction(MoveTemp(InNodeCategory), MoveTemp(InMenuDesc), MoveTemp(InToolTip), InGrouping)
+    , NodeTemplate(nullptr) {}
+
+    // FEdGraphSchemaAction interface
+	virtual UEdGraphNode* PerformAction(class UEdGraph* ParentGraph, UEdGraphPin* FromPin, const FVector2D Location, bool bSelectNewNode = true) override;
+    //virtual UEdGraphNode* PerformAction(class UEdGraph* ParentGraph, TArray<UEdGraphPin*>& FromPins, const FVector2D Location, bool bSelectNewNode = true) override;
+	virtual void AddReferencedObjects(FReferenceCollector& Collector) override;
+    // End of FEdGraphSchemaAction interface
+
+    // template <typename NodeType>
+    // static NodeType* SpawnNodeFromTemplate(class UEdGraph* ParentGraph, NodeType* InTemplateNode, const FVector2D Location)
+    // {
+    //     FEdGraphSchemaAction_QuestSystemEditor_NewNode Action;
+    //     Action.NodeTemplate = InTemplateNode;
+    //     return Cast<NodeType>(Action.PerformAction(ParentGraph, nullptr, Location));
+    // }
 };
 
 UCLASS()
@@ -47,9 +83,10 @@ class QUESTSYSTEMEDITOR_API UAssetQuestSystemGraphSchema : public UEdGraphSchema
 	GENERATED_BODY()
 public:
 	//~ Begin EdGraphSchema Interface
-    
-	// virtual void CreateDefaultNodesForGraph(UEdGraph& Graph) const override;
+	virtual void CreateDefaultNodesForGraph(UEdGraph& Graph) const override;
+    void GetBreakLinkToSubMenuActions(UToolMenu* Menu, UEdGraphPin* InGraphPin);
 	virtual void GetGraphContextActions(FGraphContextMenuBuilder& ContextMenuBuilder) const override;
+    virtual EGraphType GetGraphType(const UEdGraph *TestEdGraph) const override;
 	virtual void GetContextMenuActions(UToolMenu* Menu, UGraphNodeContextMenuContext* Context) const override;
 	virtual const FPinConnectionResponse CanCreateConnection(const UEdGraphPin* A, const UEdGraphPin* B) const override;
 	virtual const FPinConnectionResponse CanMergeNodes(const UEdGraphNode* A, const UEdGraphNode* B) const override;
@@ -74,8 +111,8 @@ public:
 
 protected:
     // for next changes of schema and nodes
-    // for now it function does nothing
-    static TSharedPtr<FQuestSystemEdGraphSchemaAction_NewNode> AddNewNodeAction(FGraphActionListBuilderBase& ContextMenuBuilder, const FText& Category, const FText& MenuDesc, const FText& Tooltip);
+    // for now that function does nothing
+    static TSharedPtr<FEdGraphSchemaAction_QuestSystemEditor_NewNode> AddNewNodeAction(FGraphActionListBuilderBase& ContextMenuBuilder, const FText& Category, const FText& MenuDesc, const FText& Tooltip);
 
 private:
     // ID for checking dirty status of node titles against, increases whenever 

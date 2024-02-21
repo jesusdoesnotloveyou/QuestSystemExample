@@ -3,6 +3,7 @@
 #include "QuestSystemGraphAssetEditor/K2Node_QuestSystemNode.h"
 #include "BlueprintActionDatabaseRegistrar.h"
 #include "BlueprintNodeSpawner.h"
+#include "KismetCompiler.h"
 
 #define LOCTEXT_NAMESPACE "UK2Node_QuestSystemNode"
 
@@ -23,12 +24,17 @@ void UK2Node_QuestSystemNode::ExpandNode(class FKismetCompilerContext& CompilerC
 {
     Super::ExpandNode(CompilerContext, SourceGraph);
 
+    //const auto Node = CompilerContext.SpawnIntermediateNode<UK2Node_QuestSystemNode>(this, SourceGraph);
+    //Node->AllocateDefaultPins();
+    
     GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Red, TEXT("Finally the Node actually works"));
+
+    BreakAllNodeLinks( );
 }
 
 FText UK2Node_QuestSystemNode::GetMenuCategory() const
 {
-    return LOCTEXT("K2Node_QuestSystem_Category", "Quest System");
+    return LOCTEXT("QuestSystemNode_Category", "Quest System");
 }
 
 /////////////////////////////////////////////////////
@@ -50,18 +56,19 @@ void UK2Node_QuestSystemNode::AllocateDefaultPins()
 
 FText UK2Node_QuestSystemNode::GetTooltipText() const
 {
-    return LOCTEXT("K2Node_QuestSystem_TooltipText", "Does nothing for now");
+    return LOCTEXT("QuestSystemNode_TooltipText", "Does nothing for now");
+}
+
+
+FText UK2Node_QuestSystemNode::GetNodeTitle(ENodeTitleType::Type TitleType) const
+{
+    //return UEdGraphNode::GetNodeTitle(ENodeTitleType::EditableTitle);
+    return LOCTEXT("QuestSystemNode_NodeTitle", "Base Test Node");
 }
 
 FLinearColor UK2Node_QuestSystemNode::GetNodeTitleColor() const
 {
     return FLinearColor::Red;
-}
-
-FText UK2Node_QuestSystemNode::GetNodeTitle(ENodeTitleType::Type TitleType) const
-{
-    //return UEdGraphNode::GetNodeTitle(ENodeTitleType::EditableTitle);
-    return LOCTEXT("K2Node_QuestSystem_NodeTitle", "Test Node");
 }
 
 #undef LOCTEXT_NAMESPACE
