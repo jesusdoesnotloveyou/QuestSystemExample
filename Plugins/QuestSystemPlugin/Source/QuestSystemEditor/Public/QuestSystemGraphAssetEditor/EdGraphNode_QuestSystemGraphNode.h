@@ -8,7 +8,7 @@
 
 class UQuestSystemGraphNode;
 class UEdGraph_QuestSystemGraph;
-//class UAssetQuestSystemGraphSchema;
+class SGraphNode_QuestSystemGraphNode;
 //class UEdNode_QuestSystemGraphEdge;
 
 UCLASS()
@@ -26,7 +26,7 @@ public:
 	UEdGraph_QuestSystemGraph* GetEdGraph() const;
 	
 	// Need a slate class for node
-	// SEdNode_QuestSystemGraphNode* SEdNode;
+	SGraphNode_QuestSystemGraphNode* SEdNode;
 	
 	//~ Begin UEdGraphNode Interfaces
 	virtual void AllocateDefaultPins() override;

@@ -16,13 +16,22 @@ public:
 	SLATE_END_ARGS()
 
 	void Construct(const FArguments& InArgs, UEdGraphNode_QuestSystemGraphNode* InNode);
+
+    // SGraphNode interface
+    virtual void UpdateGraphNode() override;
+    virtual void CreatePinWidgets() override;
+    // End of SGraphNode interface
+
+protected:
+    //FSlateColor GetEdgeColor() const;
+    
 };
 
-class QUESTSYSTEMEDITOR_API SGraphNode_QuestSystemK2GraphNode : public SGraphNodeK2Base
-{
-public:
-    SLATE_BEGIN_ARGS(SGraphNode_QuestSystemK2GraphNode) {}
-    SLATE_END_ARGS()
-
-    void Construct(const FArguments& InArgs, UK2Node_QuestSystemNode* InNode);
-};
+// class QUESTSYSTEMEDITOR_API SGraphNode_QuestSystemK2GraphNode : public SGraphNodeK2Base
+// {
+// public:
+//     SLATE_BEGIN_ARGS(SGraphNode_QuestSystemK2GraphNode) {}
+//     SLATE_END_ARGS()
+//
+//     void Construct(const FArguments& InArgs, UK2Node_QuestSystemNode* InNode);
+// };

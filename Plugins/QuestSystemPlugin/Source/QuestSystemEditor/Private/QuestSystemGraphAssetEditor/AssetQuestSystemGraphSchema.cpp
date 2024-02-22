@@ -437,10 +437,11 @@ bool UAssetQuestSystemGraphSchema::TryCreateConnection(UEdGraphPin* A, UEdGraphP
     return false;
 }
 
-class FConnectionDrawingPolicy* UAssetQuestSystemGraphSchema::CreateConnectionDrawingPolicy(int32 InBackLayerID, int32 InFrontLayerID, float InZoomFactor, const FSlateRect &InClippingRect, FSlateWindowElementList &InDrawElements, UEdGraph *InGraphObj) const
-{
-     return new FConnectionDrawingPolicy_QuestSystemEditor(InBackLayerID, InFrontLayerID, InZoomFactor, InClippingRect, InDrawElements, InGraphObj);
-}
+// Connection policy registered in FQuestSystemEditorModule
+// class FConnectionDrawingPolicy* UAssetQuestSystemGraphSchema::CreateConnectionDrawingPolicy(int32 InBackLayerID, int32 InFrontLayerID, float InZoomFactor, const FSlateRect &InClippingRect, FSlateWindowElementList &InDrawElements, UEdGraph *InGraphObj) const
+// {
+//      return new FConnectionDrawingPolicy_QuestSystemEditor(InBackLayerID, InFrontLayerID, InZoomFactor, InClippingRect, InDrawElements, InGraphObj);
+// }
 
 
 FLinearColor UAssetQuestSystemGraphSchema::GetPinTypeColor(const FEdGraphPinType& PinType) const
