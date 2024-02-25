@@ -4,8 +4,10 @@
 
 #include "CoreMinimal.h"
 #include "UObject/NoExportTypes.h"
-#include "QuestSystemGraphNode.h"
 #include "QuestSystemGraphEdge.generated.h"
+
+class UQuestSystemGraphNode;
+class UQuestSystemGraph;
 
 UCLASS()
 class QUESTSYSTEMRUNTIME_API UQuestSystemGraphEdge : public UObject
@@ -19,10 +21,10 @@ public:
 	UQuestSystemGraph* Graph;
 	
 	UPROPERTY(VisibleAnywhere, Category = "QuestSystemGraphEdge")
-	UQuestSystemGraphEdge* StartNode;
+	UQuestSystemGraphNode* StartNode;
 	
 	UPROPERTY(VisibleAnywhere, Category = "QuestSystemGraphEdge")
-	UQuestSystemGraphEdge* EndNode;
+	UQuestSystemGraphNode* EndNode;
 
 	UFUNCTION(Category = "QuestSystemGraphEdge")
 	UQuestSystemGraph* GetGraph() const;

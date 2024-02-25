@@ -285,7 +285,7 @@ EGraphType UAssetQuestSystemGraphSchema::GetGraphType(const UEdGraph *TestEdGrap
     return GT_StateMachine;
 }
 
-void UAssetQuestSystemGraphSchema::GetContextMenuActions(class UToolMenu* Menu, class UGraphNodeContextMenuContext* Context) const
+void UAssetQuestSystemGraphSchema::GetContextMenuActions(UToolMenu* Menu, UGraphNodeContextMenuContext* Context) const
 {
 	if (Context->Pin)
 	{
@@ -314,6 +314,9 @@ void UAssetQuestSystemGraphSchema::GetContextMenuActions(class UToolMenu* Menu, 
 	{
 		
 		FToolMenuSection& NodeActionsSection = Menu->AddSection("QuestSystemGraphSchemaNodeActions", LOCTEXT("ClassActionsMenuHeader", "Node Actions"));
+	    NodeActionsSection.AddSeparator(FName("Main Options"));
+	    NodeActionsSection.AddMenuEntry(FGenericCommands::Get().Rename);
+	    NodeActionsSection.AddSeparator(FName("Other Options"));
         NodeActionsSection.AddMenuEntry(FGenericCommands::Get().Rename);
 	    NodeActionsSection.AddMenuEntry(FGenericCommands::Get().Delete);
 		NodeActionsSection.AddMenuEntry(FGenericCommands::Get().Cut);

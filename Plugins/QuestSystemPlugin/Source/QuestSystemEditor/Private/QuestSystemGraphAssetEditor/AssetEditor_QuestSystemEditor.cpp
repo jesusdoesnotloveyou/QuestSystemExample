@@ -18,7 +18,6 @@
 #include "EditorStyle/Public/EditorStyleSet.h"
 
 #include "QuestSystemGraphAssetEditor/EdGraphNode_QuestSystemGraphNode.h"
-#include "QuestSystemGraphAssetEditor/EdGraphSchema_K2_QuestSystem.h"
 #include "QuestSystemGraphAssetEditor/EdNode_QuestSystemGraphEdge.h"
 
 DEFINE_LOG_CATEGORY_STATIC(AssetEditr_QuestSystemGraph, All, All);
@@ -33,12 +32,13 @@ const FName FAssetEditor_QuestSystemEditor::SettingsTabId( TEXT ("QuestSystemEdi
 
 FAssetEditor_QuestSystemEditor::FAssetEditor_QuestSystemEditor()
 {
-	EditorGraph = nullptr;
+	EditingGraph = nullptr;
     EditorSettings = nullptr;
 }
 
 FAssetEditor_QuestSystemEditor::~FAssetEditor_QuestSystemEditor()
 {
+	EditingGraph = nullptr;
 	
 }
 
@@ -47,8 +47,8 @@ FAssetEditor_QuestSystemEditor::~FAssetEditor_QuestSystemEditor()
  */
 void FAssetEditor_QuestSystemEditor::CreateNewNode()
 {
-    if (!EditorGraph || !EditorGraph->EdGraph) return;
-    //EditorGraph->EdGraph->;
+    if (!EditingGraph || !EditingGraph->EdGraph) return;
+    //EditingGraph->EdGraph->;
 }
 
 bool FAssetEditor_QuestSystemEditor::CanCreateNewNode() const
@@ -58,7 +58,7 @@ bool FAssetEditor_QuestSystemEditor::CanCreateNewNode() const
 
 void FAssetEditor_QuestSystemEditor::InitQuestSystemEditor(const EToolkitMode::Type Mode, const TSharedPtr<IToolkitHost>& InitToolkitHost, UQuestSystemGraph* GraphToEdit)
 {
-	EditorGraph = GraphToEdit;
+	EditingGraph = GraphToEdit;
     EditorSettings = NewObject<UGraphEditorSettings_QuestSystemEditor>(UGraphEditorSettings_QuestSystemEditor::StaticClass());
 	CreateEdGraph();
 
@@ -123,7 +123,8 @@ void FAssetEditor_QuestSystemEditor::InitQuestSystemEditor(const EToolkitMode::T
     
 	FAssetEditorToolkit::InitAssetEditor(Mode, InitToolkitHost, QuestSystemEditorAppIdentifier, StandaloneDefaultLayout,
 	                                     bCreateDefaultStandaloneMenu,
-	                                     bCreateDefaultToolbar, EditorGraph);
+	                                     bCreateDefaultToolbar, EditingGraph);
+    RegenerateMenusAndToolbars();
 }
 
 void FAssetEditor_QuestSystemEditor::RegisterTabSpawners(const TSharedRef<FTabManager>& InTabManager)
@@ -159,8 +160,8 @@ void FAssetEditor_QuestSystemEditor::UnregisterTabSpawners(const TSharedRef<FTab
 
 void FAssetEditor_QuestSystemEditor::AddReferencedObjects(class FReferenceCollector& Collector)
 {
-    Collector.AddReferencedObject(EditorGraph);
-    Collector.AddReferencedObject(EditorGraph->EdGraph);
+    Collector.AddReferencedObject(EditingGraph);
+    Collector.AddReferencedObject(EditingGraph->EdGraph);
 }
 
 void FAssetEditor_QuestSystemEditor::CreateInternalWidgets()
@@ -177,9 +178,9 @@ void FAssetEditor_QuestSystemEditor::CreateInternalWidgets()
 
     FPropertyEditorModule& PropertyEditorModule = FModuleManager::GetModuleChecked<FPropertyEditorModule>("PropertyEditor");
     DetailsView = PropertyEditorModule.CreateDetailView(DetailsViewArgs);
-    DetailsView->SetObject(EditorGraph);
+    DetailsView->SetObject(EditingGraph);
     // DetailsView->SetIsPropertyEditingEnabledDelegate(FIsPropertyEditingEnabled::CreateSP(this, &FAssetEditor_QuestSystemEditorEditor::IsPropertyEditable));
-    // DetailsView->OnFinishedChangingProperties().AddSP(this, &FAssetEditor_QuestSystemEditor::OnFinishedChangingProperties);
+    DetailsView->OnFinishedChangingProperties().AddSP(this, &FAssetEditor_QuestSystemEditor::OnFinishedChangingProperties);
         
     EditorSettingsView = PropertyEditorModule.CreateDetailView(SettingsViewArgs);
     EditorSettingsView->SetObject(GetEditorSettings());
@@ -230,7 +231,7 @@ TSharedRef<SDockTab> FAssetEditor_QuestSystemEditor::SpawnTab_Viewport(const FSp
 
 TSharedRef<SGraphEditor> FAssetEditor_QuestSystemEditor::CreateGraphEditorWidget()
 {
-	check(EditorGraph->EdGraph); // What's this for?
+	check(EditingGraph->EdGraph); // What's this for?
 	FGraphAppearanceInfo GraphAppearanceInfo;
 	// Allow to use LOCTEXT below
 	GraphAppearanceInfo.CornerText = FText::FromString("Quest System Editor");
@@ -240,7 +241,7 @@ TSharedRef<SGraphEditor> FAssetEditor_QuestSystemEditor::CreateGraphEditorWidget
 	SGraphEditor::FGraphEditorEvents InEvents;
 	InEvents.OnSelectionChanged = SGraphEditor::FOnSelectionChanged::CreateSP(this, &FAssetEditor_QuestSystemEditor::OnSelectedNodesChanged);
 	InEvents.OnNodeDoubleClicked = FSingleNodeEvent::CreateSP(this, &FAssetEditor_QuestSystemEditor::OnNodeDoubleClicked);
-    InEvents.OnTextCommitted = FOnNodeTextCommitted::CreateSP(this, &FAssetEditor_QuestSystemEditor::OnNodeTitleCommitted);
+	InEvents.OnTextCommitted = FOnNodeTextCommitted::CreateSP(this, &FAssetEditor_QuestSystemEditor::OnNodeTitleCommitted);
 
     // Make title bar
     TSharedRef<SWidget> TitleBarWidget =
@@ -261,10 +262,10 @@ TSharedRef<SGraphEditor> FAssetEditor_QuestSystemEditor::CreateGraphEditorWidget
     
 	return SNew(SGraphEditor)
 		.AdditionalCommands(GraphEditorCommands)
-		.IsEditable(EditorGraph->EdGraph->bEditable)
+		.IsEditable(EditingGraph->EdGraph->bEditable)
 		.Appearance(GraphAppearanceInfo)
         .TitleBar(TitleBarWidget)
-		.GraphToEdit(EditorGraph->EdGraph)
+		.GraphToEdit(EditingGraph->EdGraph)
 		.GraphEvents(InEvents)
 		.AutoExpandActionMenu(true)
 		.ShowGraphStateOverlay(true);
@@ -272,15 +273,26 @@ TSharedRef<SGraphEditor> FAssetEditor_QuestSystemEditor::CreateGraphEditorWidget
 
 void FAssetEditor_QuestSystemEditor::CreateEdGraph()
 {
-	if (!EditorGraph->EdGraph)
+	if (!EditingGraph->EdGraph)
 	{
-		EditorGraph->EdGraph = CastChecked<UEdGraph_QuestSystemGraph>(FBlueprintEditorUtils::CreateNewGraph(
-		    EditorGraph,
+		EditingGraph->EdGraph = CastChecked<UEdGraph_QuestSystemGraph>(FBlueprintEditorUtils::CreateNewGraph(
+		    EditingGraph,
 		    NAME_None,
 		    UEdGraph_QuestSystemGraph::StaticClass(),
 		    UAssetQuestSystemGraphSchema::StaticClass()));
-		EditorGraph->EdGraph->bAllowDeletion = false;
+		EditingGraph->EdGraph->bAllowDeletion = false;
 	}
+}
+
+void FAssetEditor_QuestSystemEditor::RebuildQuestSystemGraph()
+{
+    // gotta create Log message if Editing graph is nullptr
+    if (!EditingGraph) return;
+    
+    UEdGraph_QuestSystemGraph* EdGraph = Cast<UEdGraph_QuestSystemGraph>(EditingGraph->EdGraph);
+    check(EdGraph);
+
+    EdGraph->RebuildGraph();
 }
 
 TSharedPtr<SGraphEditor> FAssetEditor_QuestSystemEditor::GetCurrentGraphEditor() const
@@ -330,7 +342,7 @@ void FAssetEditor_QuestSystemEditor::CreateCommandList()
 	    GraphEditorCommands->MapAction(FGraphEditorCommands::Get().CreateComment,
         FExecuteAction::CreateRaw(this, &FAssetEditor_QuestSystemEditor::OnCreateComment),
         FCanExecuteAction::CreateRaw(this, &FAssetEditor_QuestSystemEditor::CanCreateComment)
-    );
+        );
 	}
 }
 
@@ -605,10 +617,35 @@ bool FAssetEditor_QuestSystemEditor::CanCreateComment()
 // TODO: make nodes showing up in the property view on selecting
 void FAssetEditor_QuestSystemEditor::OnSelectedNodesChanged(const TSet<UObject*>& NewSelection)
 {
+    TArray<UObject*> Selection;
+
+    for (const auto& SelectionEntry : NewSelection)
+    {
+        Selection.Add(SelectionEntry);
+    }
+
+    if (Selection.Num() == 1)
+    {
+        DetailsView->SetObjects(Selection);
+        DetailsView->ShowAllAdvancedProperties();
+    }
+    else
+    {
+        DetailsView->SetObject(EditingGraph);
+    }
 }
 
 void FAssetEditor_QuestSystemEditor::OnNodeDoubleClicked(UEdGraphNode* Node)
 {
+    
+}
+
+void FAssetEditor_QuestSystemEditor::OnFinishedChangingProperties(const FPropertyChangedEvent& PropertyChangedEvent)
+{
+    if (!EditingGraph) return;
+    EditingGraph->EdGraph->GetSchema()->ForceVisualizationCacheClear();
+
+    RebuildQuestSystemGraph();
 }
 
 void FAssetEditor_QuestSystemEditor::OnNodeTitleCommitted(const FText& NewText, ETextCommit::Type CommitInfo, UEdGraphNode* NodeBeingChanged)

@@ -19,7 +19,7 @@ public:
 	UEdGraphNode_QuestSystemGraphNode();
 	virtual ~UEdGraphNode_QuestSystemGraphNode() override;
 
-	UPROPERTY()
+	UPROPERTY(EditDefaultsOnly, Category = "QuestSystemGraphNode")
 	UQuestSystemGraphNode* QuestSystemGraphNode;
 
 	void SetQuestSystemGraphNode(UQuestSystemGraphNode* InNode);
