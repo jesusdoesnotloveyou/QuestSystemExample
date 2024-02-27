@@ -220,12 +220,12 @@ void UAssetQuestSystemGraphSchema::GetGraphContextActions(FGraphContextMenuBuild
 
 	const bool bNoParent = (ContextMenuBuilder.FromPin == nullptr);
 
-	const FText AddToolTip = LOCTEXT("NewQuestSystemGraphNodeTooltip", "Add node here");
+	FText AddToolTip = LOCTEXT("NewQuestSystemGraphNodeTooltip", "Add node here");
 
 	TSet<TSubclassOf<UQuestSystemGraphNode>> Visited;
 
 	FText Desc = Graph->NodeType.GetDefaultObject()->ContextMenuName;
-    //FText NodeCategory = Graph->NodeType.GetDefaultObject()->GetNodeCategory();
+    FText NodeCategory = Graph->NodeType.GetDefaultObject()->GetNodeCategory();
 
 	if (Desc.IsEmpty())
 	{
@@ -236,7 +236,7 @@ void UAssetQuestSystemGraphSchema::GetGraphContextActions(FGraphContextMenuBuild
 
 	if (!Graph->NodeType->HasAnyClassFlags(CLASS_Abstract))
 	{
-		TSharedPtr<FEdGraphSchemaAction_QuestSystemEditor_NewNode> NewNodeAction(new FEdGraphSchemaAction_QuestSystemEditor_NewNode(LOCTEXT("QuestSystemGraphNodeAction", "Quest System Graph Node"), Desc, AddToolTip, 0));
+		TSharedPtr<FEdGraphSchemaAction_QuestSystemEditor_NewNode> NewNodeAction(new FEdGraphSchemaAction_QuestSystemEditor_NewNode(NodeCategory, Desc, AddToolTip, 0));
 		NewNodeAction->NodeTemplate = NewObject<UEdGraphNode_QuestSystemGraphNode>(ContextMenuBuilder.OwnerOfTemporaries);
 		NewNodeAction->NodeTemplate->QuestSystemGraphNode = NewObject<UQuestSystemGraphNode>(NewNodeAction->NodeTemplate, Graph->NodeType);
 		NewNodeAction->NodeTemplate->QuestSystemGraphNode->Graph = Graph;
@@ -261,6 +261,8 @@ void UAssetQuestSystemGraphSchema::GetGraphContextActions(FGraphContextMenuBuild
             //     continue;
 		    
 			Desc = NodeType.GetDefaultObject()->ContextMenuName;
+		    AddToolTip = NodeType.GetDefaultObject()->GetDescription();
+		    NodeCategory = NodeType.GetDefaultObject()->GetNodeCategory();
 
 			if (Desc.IsEmpty())
 			{
@@ -269,7 +271,7 @@ void UAssetQuestSystemGraphSchema::GetGraphContextActions(FGraphContextMenuBuild
 				Desc = FText::FromString(Title);
 			}
 		    
-			TSharedPtr<FEdGraphSchemaAction_QuestSystemEditor_NewNode> Action(new FEdGraphSchemaAction_QuestSystemEditor_NewNode(LOCTEXT("QuestSystemGraphNodeAction", "Quest System Graph Node"), Desc, AddToolTip, 0));
+			TSharedPtr<FEdGraphSchemaAction_QuestSystemEditor_NewNode> Action(new FEdGraphSchemaAction_QuestSystemEditor_NewNode(NodeCategory, Desc, AddToolTip, 0));
 			Action->NodeTemplate = NewObject<UEdGraphNode_QuestSystemGraphNode>(ContextMenuBuilder.OwnerOfTemporaries);
 			Action->NodeTemplate->QuestSystemGraphNode = NewObject<UQuestSystemGraphNode>(Action->NodeTemplate, NodeType);
 			Action->NodeTemplate->QuestSystemGraphNode->Graph = Graph;
