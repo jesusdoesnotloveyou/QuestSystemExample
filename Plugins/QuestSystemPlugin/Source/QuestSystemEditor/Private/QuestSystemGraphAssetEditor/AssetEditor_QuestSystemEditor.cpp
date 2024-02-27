@@ -308,7 +308,8 @@ bool FAssetEditor_QuestSystemEditor::IsPropertyEditable() const
 void FAssetEditor_QuestSystemEditor::CreateCommandList()
 {
 	if (GraphEditorCommands.IsValid()) return; // if the list already exists, we don't need to define it
-	GraphEditorCommands = MakeShareable(new FUICommandList);
+
+    GraphEditorCommands = MakeShareable(new FUICommandList);
 	{
 	    GraphEditorCommands->MapAction(FGenericCommands::Get().SelectAll,
 			FExecuteAction::CreateSP(this, &FAssetEditor_QuestSystemEditor::SelectAllNodes),

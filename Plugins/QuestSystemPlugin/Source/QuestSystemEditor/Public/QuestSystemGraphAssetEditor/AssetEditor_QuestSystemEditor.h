@@ -120,7 +120,7 @@ protected:
     void ShowMessage();
 
 protected:
-    UGraphEditorSettings_QuestSystemEditor *EditorSettings;
+    UGraphEditorSettings_QuestSystemEditor* EditorSettings;
 
     UQuestSystemGraph *EditingGraph;
 
