@@ -19,24 +19,22 @@ public:
 	UEdGraphNode_QuestSystemGraphNode();
 	virtual ~UEdGraphNode_QuestSystemGraphNode() override;
 
-	UPROPERTY(EditDefaultsOnly, Category = "QuestSystemGraphNode")
-	UQuestSystemGraphNode* QuestSystemGraphNode;
-
 	void SetQuestSystemGraphNode(UQuestSystemGraphNode* InNode);
+	
 	UEdGraph_QuestSystemGraph* GetEdGraph() const;
-	
-	// Need a slate class for node
-	SGraphNode_QuestSystemGraphNode* SEdNode;
-	
+    
 	//~ Begin UEdGraphNode Interfaces
 	virtual void AllocateDefaultPins() override;
 	virtual FText GetNodeTitle(ENodeTitleType::Type TitleType) const override;
 	//~ Gets the tooltip to display when over the node
 	virtual FText GetTooltipText() const override;
-    //~ End UEdGraphNode Interface
-    
 	virtual void AutowireNewNode(UEdGraphPin* FromPin) override;
+    //~ End UEdGraphNode Interface
 
+    virtual bool CanUserDeleteNode() const override;
+	virtual bool CanDuplicateNode() const override;
+	//virtual bool CanUserPasteNodes() const;
+    
     virtual void NodeConnectionListChanged() override;
     
 	// virtual void PrepareForCopying() override;
@@ -44,9 +42,17 @@ public:
 	virtual UEdGraphPin* GetInputPin() const;
 	virtual UEdGraphPin* GetOutputPin() const;
 
+#if WITH_EDITOR
 	virtual void PostEditUndo() override;
-
+#endif
     /** check if node can accept breakpoints */
     /** that function in UK2Node class */
     virtual bool CanPlaceBreakpoints() const { return false; }
+
+public: 
+    UPROPERTY(EditDefaultsOnly, Category = "QuestSystemGraphNode")
+    UQuestSystemGraphNode* QuestSystemGraphNode;
+
+    // Need a slate class for node
+    SGraphNode_QuestSystemGraphNode* SEdNode;
 };

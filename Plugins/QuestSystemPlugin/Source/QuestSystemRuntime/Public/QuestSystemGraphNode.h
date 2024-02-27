@@ -16,7 +16,7 @@ enum class ENodeLimit : uint8
 	Limited
 };
 
-UCLASS()
+UCLASS(/*Abstract,*/ BlueprintType)
 class QUESTSYSTEMRUNTIME_API UQuestSystemGraphNode : public UObject
 {
 	GENERATED_BODY()
@@ -25,15 +25,16 @@ public:
 	UQuestSystemGraphNode();
 	virtual ~UQuestSystemGraphNode() override;
 
-	UPROPERTY(VisibleDefaultsOnly, Category = "QuestSystemGraphNode")
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "QuestSystemGraphNode")
 	UQuestSystemGraph* Graph;
 
-	UPROPERTY(BlueprintReadOnly, Category = "QuestSystemGraphNode")
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "QuestSystemGraphNode")
 	TArray<UQuestSystemGraphNode*> ParentNodes;
 
-	UPROPERTY(BlueprintReadOnly, Category = "QuestSystemGraphNode")
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "QuestSystemGraphNode")
 	TArray<UQuestSystemGraphNode*> ChildrenNodes;
 
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "QuestSystemGraphNode")
 	TMap<UQuestSystemGraphNode*, UQuestSystemGraphEdge*> Edges;
 
 	UFUNCTION(BlueprintCallable, Category = "QuestSystemGraphNode")
@@ -42,12 +43,17 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "QuestSystemGraphNode")
 	UQuestSystemGraph* GetGraph() const;
 
+protected:
+    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "QuestSystemGraphNode")
+    FGuid NodeGUID;
+
+private:
+    UPROPERTY(VisibleAnywhere, Category = "QuestSystemGraphNode")
+    UWorld* OwningWorld;
+    
+public:
 	UFUNCTION(BlueprintCallable, Category = "QuestSystemGraphNode")
 	bool IsLeafNode() const;
-	
-	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category = "QuestSystemGraphNode")
-	FText GetDescription() const;
-	virtual FText GetDescription_Implementation() const;
 
 #if WITH_EDITORONLY_DATA
 	UPROPERTY(VisibleDefaultsOnly, Category = "QuestSystemGraphNodeEditor")
@@ -55,6 +61,9 @@ public:
 	
 	UPROPERTY(EditDefaultsOnly, Category = "QuestSystemGraphNodeEditor")
 	FText NodeTitle;
+
+    UPROPERTY(EditDefaultsOnly, Category = "QuestSystemGraphNodeEditor")
+    FText NodeTooltipText;
 
 	UPROPERTY(EditDefaultsOnly, Category = "QuestSystemGraphNodeEditor")
 	FText ContextMenuName;
@@ -76,11 +85,25 @@ public:
 #endif
 
 #if WITH_EDITOR
+    UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category = "QuestSystemGraphNode")
+    FText GetDescription() const;
+    virtual FText GetDescription_Implementation() const;
+
+    UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category="QuestSystemGraphNode")
+    FText GetNodeCategory() const;
+    virtual FText GetNodeCategory_Implementation() const;
+    
+    UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category="QuestSystemGraphNode")
+    FText GetNodeTooltipText() const;
+    virtual FText GetNodeTooltipText_Implementation() const;
+
+    UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category="QuestSystemGraphNode")
+	FText GetNodeTitle() const;
+	virtual FText GetNodeTitle_Implementation() const;
+
 	virtual bool IsNameEditable() const;
 
-	virtual FLinearColor GetBackgroundColor() const;
-
-	virtual FText GetNodeTitle() const;
+    virtual FLinearColor GetBackgroundColor() const;
 
 	virtual void SetNodeTitle(const FText& NewTitle);
 
