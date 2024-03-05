@@ -20,6 +20,8 @@ public:
     // SGraphNode interface
     virtual void UpdateGraphNode() override;
     virtual void CreatePinWidgets() override;
+    virtual void AddPin(const TSharedRef<SGraphPin> &PinToAdd) override;
+    virtual bool IsNameReadOnly() const;
     // End of SGraphNode interface
 
 protected:

@@ -7,6 +7,9 @@
 void SGraphNode_QuestSystemGraphNode::Construct(const FArguments& InArgs, UEdGraphNode_QuestSystemGraphNode* InNode)
 {
 	GraphNode = InNode;
+
+    SetCursor(EMouseCursor::CardinalCross);
+    
 	UpdateGraphNode();
     InNode->SEdNode = this;
 }
@@ -21,9 +24,12 @@ void SGraphNode_QuestSystemGraphNode::CreatePinWidgets()
     SGraphNode::CreatePinWidgets();
 }
 
-// // SGraphNode_QuestSystemK2GraphNode
-// void SGraphNode_QuestSystemK2GraphNode::Construct(const FArguments& InArgs, UK2Node_QuestSystemNode* InNode)
-// {
-//     GraphNode = InNode;
-//     UpdateGraphNode();
-// }
+void SGraphNode_QuestSystemGraphNode::AddPin(const TSharedRef<SGraphPin> &PinToAdd)
+{
+    SGraphNode::AddPin(PinToAdd);
+}
+
+bool SGraphNode_QuestSystemGraphNode::IsNameReadOnly() const
+{
+    return SGraphNode::IsNameReadOnly();
+}
