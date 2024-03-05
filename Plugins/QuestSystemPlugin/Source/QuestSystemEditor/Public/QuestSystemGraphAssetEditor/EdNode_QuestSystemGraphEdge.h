@@ -21,7 +21,7 @@ public:
 	UPROPERTY()
 	class UEdGraph* Graph;
 
-	UPROPERTY(VisibleAnywhere, Instanced, Category = "GenericGraph")
+	UPROPERTY(VisibleAnywhere, Instanced, Category = "QuestSystemGraphEdge")
 	UQuestSystemGraphEdge* QuestSystemGraphEdge;
 
 	void SetEdge(UQuestSystemGraphEdge* InEdge);
@@ -33,8 +33,8 @@ public:
 
 	virtual void PrepareForCopying() override;
 
-	virtual UEdGraphPin* GetInputPin() const;
-	virtual UEdGraphPin* GetOutputPin() const;
+	virtual UEdGraphPin* GetInputPin() const { return Pins[0]; }
+	virtual UEdGraphPin* GetOutputPin() const { return Pins[1]; }
 
 	void CreateConnections(UEdGraphNode_QuestSystemGraphNode* Start, UEdGraphNode_QuestSystemGraphNode* End);
 

@@ -15,4 +15,13 @@ public:
 	SLATE_END_ARGS()
 
 	void Construct(const FArguments& InArgs, UEdNode_QuestSystemGraphEdge* InNode);
+
+    virtual bool RequiresSecondPassLayout() const override;
+    virtual void PerformSecondPassLayout(const TMap<UObject *, TSharedRef<SNode>> &InNodeToWidgetLookup) const override;
+
+    virtual void UpdateGraphNode() override;
+
+protected:
+    FSlateColor GetEdgeColor() const;
 };
+

@@ -76,7 +76,7 @@ FText UEdGraphNode_QuestSystemGraphNode::GetTooltipText() const
     {
         return QuestSystemGraphNode->GetNodeTooltipText();
     }
-	return FText();
+	return FText(FText::FromString(("QuestSystemGraphNode isn't valid")));
 }
 
 UEdGraphPin* UEdGraphNode_QuestSystemGraphNode::GetInputPin() const
@@ -91,5 +91,10 @@ UEdGraphPin* UEdGraphNode_QuestSystemGraphNode::GetOutputPin() const
 
 void UEdGraphNode_QuestSystemGraphNode::PostEditUndo()
 {
-	UEdGraphNode::PostEditUndo();
+	Super::PostEditUndo();
+}
+
+void UEdGraphNode_QuestSystemGraphNode::PostEditChangeProperty(FPropertyChangedEvent &PropertyChangedEvent)
+{
+    Super::PostEditChangeProperty(PropertyChangedEvent);
 }
