@@ -6,6 +6,14 @@
 #include "QuestSystemGraphNode.h"
 #include "QuestSystemGraphNode_Base.generated.h"
 
+// TODO
+UENUM()
+enum class ENodeCategory : uint8
+{
+    Action = 0,
+    Branch,
+};
+
 UCLASS()
 class QUESTSYSTEMRUNTIME_API UQuestSystemGraphNode_Base : public UQuestSystemGraphNode
 {
