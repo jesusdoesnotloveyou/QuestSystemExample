@@ -8,6 +8,8 @@
 
 UQuestSystemGraphNode::UQuestSystemGraphNode()
 {
+    NodeGUID = FGuid::NewGuid();
+    
 #if WITH_EDITORONLY_DATA
 	CompatibleGraphType = UQuestSystemGraph::StaticClass();
 	BackgroundColor = FLinearColor::Black;
@@ -38,6 +40,26 @@ FText UQuestSystemGraphNode::GetDescription_Implementation() const
 	return LOCTEXT("NodeDesc", "Quest System Graph Node");
 }
 
+FText UQuestSystemGraphNode::GetNodeCategory_Implementation() const
+{
+    return LOCTEXT("NodeCategory", "Quest System Base Graph Node");
+}
+
+FText UQuestSystemGraphNode::GetNodeTooltipText_Implementation() const
+{
+    return NodeTooltipText;
+}
+
+FText UQuestSystemGraphNode::GetNodeTitle_Implementation() const
+{
+	return NodeTitle.IsEmpty() ? GetDescription() : NodeTitle;
+}
+
+void UQuestSystemGraphNode::SetNodeTitle(const FText& NewTitle)
+{
+	NodeTitle = NewTitle;
+}
+
 bool UQuestSystemGraphNode::IsNameEditable() const
 {
 	return true;
@@ -46,16 +68,6 @@ bool UQuestSystemGraphNode::IsNameEditable() const
 FLinearColor UQuestSystemGraphNode::GetBackgroundColor() const
 {
 	return BackgroundColor;
-}
-
-FText UQuestSystemGraphNode::GetNodeTitle() const
-{
-	return NodeTitle.IsEmpty() ? GetDescription() : NodeTitle;
-}
-
-void UQuestSystemGraphNode::SetNodeTitle(const FText& NewTitle)
-{
-	NodeTitle = NewTitle;
 }
 
 bool UQuestSystemGraphNode::CanCreateConnection(UQuestSystemGraphNode* Other, FText& ErrorMessage)

@@ -22,8 +22,12 @@ void FQuestSystemEditorModule::StartupModule()
 	FEdGraphUtilities::RegisterVisualNodeFactory(QuestSystemEditorNodeFactory);
 
     // Register the factory for creating pins
-	//QuestSystemGraphNodePinFactory = MakeShareable(new FQuestSystemGraphNodePinFactory());
-	//FEdGraphUtilities::RegisterVisualPinFactory(QuestSystemGraphNodePinFactory);
+	QuestSystemEditorNodePinFactory = MakeShareable(new FQuestSystemGraphNodePinFactory());
+	FEdGraphUtilities::RegisterVisualPinFactory(QuestSystemEditorNodePinFactory);
+
+    // Register the factory for creating connections
+    QuestSystemEditorPinConnectionFactory = MakeShareable(new FQuestSystemGraphPinConnectionFactory());
+    FEdGraphUtilities::RegisterVisualPinConnectionFactory(QuestSystemEditorPinConnectionFactory);
 }
 
 void FQuestSystemEditorModule::ShutdownModule()
@@ -35,9 +39,23 @@ void FQuestSystemEditorModule::ShutdownModule()
 		FAssetToolsModule::GetModule().Get().UnregisterAssetTypeActions(QuestSystemEditorAssetAction.ToSharedRef());
 
     // Unregister the nodes factory
-	FEdGraphUtilities::UnregisterVisualNodeFactory(QuestSystemEditorNodeFactory);
+    if (QuestSystemEditorNodeFactory.IsValid())
+    {
+        FEdGraphUtilities::UnregisterVisualNodeFactory(QuestSystemEditorNodeFactory);
+        QuestSystemEditorNodeFactory.Reset();
+    }
     // Unregister the pins factory
-	//FEdGraphUtilities::RegisterVisualPinFactory(QuestSystemGraphNodePinFactory);
+    if (QuestSystemEditorNodePinFactory.IsValid())
+    {
+        FEdGraphUtilities::UnregisterVisualPinFactory(QuestSystemEditorNodePinFactory);
+        QuestSystemEditorNodePinFactory.Reset();
+    }
+    // Unregister the connections factory
+    if (QuestSystemEditorPinConnectionFactory.IsValid())
+    {
+        FEdGraphUtilities::UnregisterVisualPinConnectionFactory(QuestSystemEditorPinConnectionFactory);
+        QuestSystemEditorPinConnectionFactory.Reset();
+    }
 }
 
 #undef LOCTEXT_NAMESPACE

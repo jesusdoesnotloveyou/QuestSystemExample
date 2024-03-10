@@ -10,6 +10,7 @@ class UQuestSystemGraph;
 class UQuestSystemGraphNode; 
 class UQuestSystemGraphEdge;
 class UEdGraphNode_QuestSystemGraphNode;
+class UEdNode_QuestSystemGraphEdge;
 
 UCLASS()
 class QUESTSYSTEMEDITOR_API UEdGraph_QuestSystemGraph : public UEdGraph
@@ -28,9 +29,8 @@ public:
 
 	UPROPERTY(Transient)
 	TMap<UQuestSystemGraphNode*, UEdGraphNode_QuestSystemGraphNode*> NodeMap;
-	
-	// UPROPERTY(Transient)
-	// TMap<UQuestSystemGraphEdge*, UEdNode_QuestSystemGraphEdge*> EdgeMap;
+    UPROPERTY(Transient)
+    TMap<UQuestSystemGraphEdge*, UEdNode_QuestSystemGraphEdge*> EdgeMap;
 
 protected:
 	void Clear();

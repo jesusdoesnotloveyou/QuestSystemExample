@@ -55,9 +55,12 @@ protected:
     TSharedRef<SDockTab> SpawnTab_Details(const FSpawnTabArgs &Args);
     TSharedRef<SDockTab> SpawnTab_EditorSettings(const FSpawnTabArgs &Args);
 
+private:
     TSharedRef<SGraphEditor> CreateGraphEditorWidget();
     void CreateInternalWidgets();
 
+    void RebuildQuestSystemGraph();
+    
     void CreateEdGraph();
 
     bool IsPropertyEditable() const;
@@ -104,20 +107,22 @@ protected:
     bool CanCreateComment();
 
     /** Called when the selection changes in the GraphEditor */
-    void OnSelectedNodesChanged(const TSet<class UObject *> &NewSelection);
+    void OnSelectedNodesChanged(const TSet<UObject*> &NewSelection);
 
     /** Called when a node is double clicked */
-    void OnNodeDoubleClicked(class UEdGraphNode *Node);
-
+    void OnNodeDoubleClicked(UEdGraphNode* Node);
+    
+    void OnFinishedChangingProperties(const FPropertyChangedEvent& PropertyChangedEvent);
+    
     /** Called when a node's title is committed for a rename */
     void OnNodeTitleCommitted(const FText &NewText, ETextCommit::Type CommitInfo, UEdGraphNode *NodeBeingChanged);
 
     void ShowMessage();
 
 protected:
-    UGraphEditorSettings_QuestSystemEditor *EditorSettings;
+    UGraphEditorSettings_QuestSystemEditor* EditorSettings;
 
-    UQuestSystemGraph *EditorGraph;
+    UQuestSystemGraph *EditingGraph;
 
     //Toolbar
     TSharedPtr<class FAssetQuestEditorToolbar> ToolbarBuilder;
@@ -128,7 +133,7 @@ protected:
 
     /** The command list for this editor */
     TSharedPtr<class FUICommandList> GraphEditorCommands;
-
+    
     TSharedPtr<SGraphEditor> GetCurrentGraphEditor() const;
     void CreateCommandList();
 };

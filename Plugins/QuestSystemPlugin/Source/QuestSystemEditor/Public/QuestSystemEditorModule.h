@@ -6,8 +6,9 @@
 #include "Modules/ModuleManager.h"
 #include "QuestSystemGraphActions.h"
 
-class FQuestSystemGraphNodeFactory;
-class FQuestSystemGraphNodePinFactory;
+struct FQuestSystemGraphNodeFactory;
+struct FQuestSystemGraphNodePinFactory;
+struct FQuestSystemGraphPinConnectionFactory;
 
 class FQuestSystemEditorModule : public IModuleInterface
 {
@@ -22,7 +23,8 @@ public:
 
 private:
  	TSharedPtr<class FQuestSystemGraphActions> QuestSystemEditorAssetAction;
-    
-	TSharedPtr<class FQuestSystemGraphNodeFactory> QuestSystemEditorNodeFactory;
-	TSharedPtr<class FQuestSystemGraphNodePinFactory> QuestSystemEditorNodePinFactory;
+ 	
+	TSharedPtr<FQuestSystemGraphNodeFactory> QuestSystemEditorNodeFactory;
+	TSharedPtr<FQuestSystemGraphNodePinFactory> QuestSystemEditorNodePinFactory;
+	TSharedPtr<FQuestSystemGraphPinConnectionFactory> QuestSystemEditorPinConnectionFactory;
 };

@@ -2,10 +2,14 @@
 
 #include "QuestSystemGraphNodeFactory.h"
 #include "EdGraph/EdGraphNode.h"
+#include "QuestSystemGraphAssetEditor/AssetQuestSystemGraphSchema.h"
 #include "QuestSystemGraphAssetEditor/EdGraphNode_QuestSystemGraphNode.h"
-#include "QuestSystemGraphAssetEditor/SGraphNode_QuestSystemGraphNode.h"
 #include "QuestSystemGraphAssetEditor/EdNode_QuestSystemGraphEdge.h"
+#include "QuestSystemGraphAssetEditor/SGraphNode_QuestSystemGraphNode.h"
 #include "QuestSystemGraphAssetEditor/SGraphNode_QuestSystemGraphEdge.h"
+#include "QuestSystemGraphAssetEditor/ConnectionDrawingPolicy_QuestSystemEditor.h"
+#include "KismetPins/SGraphPinExec.h"
+//#include "EdGraphSchema_K2.h"
 
 TSharedPtr<SGraphNode> FQuestSystemGraphNodeFactory::CreateNode(UEdGraphNode *Node) const
 {
@@ -16,6 +20,24 @@ TSharedPtr<SGraphNode> FQuestSystemGraphNodeFactory::CreateNode(UEdGraphNode *No
     if (UEdNode_QuestSystemGraphEdge* EdNode_Edge = Cast<UEdNode_QuestSystemGraphEdge>(Node))
     {
         return SNew(SGraphNode_QuestSystemGraphEdge, EdNode_Edge);
+    }
+    return nullptr;
+}
+
+TSharedPtr<class SGraphPin> FQuestSystemGraphNodePinFactory::CreatePin(class UEdGraphPin* Pin) const 
+{
+    if (Pin->PinType.PinCategory == UEdGraphSchema_K2::PC_Exec)
+    {
+    	return SNew(SGraphPinExec, Pin);
+    }
+    return nullptr;
+}
+
+class FConnectionDrawingPolicy* FQuestSystemGraphPinConnectionFactory::CreateConnectionPolicy(const class UEdGraphSchema* Schema, int32 InBackLayerID, int32 InFrontLayerID, float ZoomFactor, const class FSlateRect& InClippingRect, class FSlateWindowElementList& InDrawElements, class UEdGraph* InGraphObj) const
+{
+    if (Schema->IsA(UAssetQuestSystemGraphSchema::StaticClass()))
+    {
+        return new FConnectionDrawingPolicy_QuestSystemEditor(InBackLayerID, InFrontLayerID, ZoomFactor, InClippingRect, InDrawElements, InGraphObj);
     }
     return nullptr;
 }

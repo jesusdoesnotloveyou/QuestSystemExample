@@ -44,6 +44,17 @@ void UEdGraphNode_QuestSystemGraphNode::AutowireNewNode(UEdGraphPin* FromPin)
 	}
 }
 
+// TODO: two functions below might need overriding more complex than these 
+bool UEdGraphNode_QuestSystemGraphNode::CanUserDeleteNode() const
+{
+    return Super::CanUserDeleteNode();
+}
+
+bool UEdGraphNode_QuestSystemGraphNode::CanDuplicateNode() const
+{
+    return Super::CanDuplicateNode();
+}
+
 void UEdGraphNode_QuestSystemGraphNode::NodeConnectionListChanged()
 {
     Super::NodeConnectionListChanged();
@@ -61,7 +72,11 @@ FText UEdGraphNode_QuestSystemGraphNode::GetNodeTitle(ENodeTitleType::Type Title
 
 FText UEdGraphNode_QuestSystemGraphNode::GetTooltipText() const
 {
-	return FText();
+    if (QuestSystemGraphNode)
+    {
+        return QuestSystemGraphNode->GetNodeTooltipText();
+    }
+	return FText(FText::FromString(("QuestSystemGraphNode isn't valid")));
 }
 
 UEdGraphPin* UEdGraphNode_QuestSystemGraphNode::GetInputPin() const
@@ -76,5 +91,10 @@ UEdGraphPin* UEdGraphNode_QuestSystemGraphNode::GetOutputPin() const
 
 void UEdGraphNode_QuestSystemGraphNode::PostEditUndo()
 {
-	UEdGraphNode::PostEditUndo();
+	Super::PostEditUndo();
+}
+
+void UEdGraphNode_QuestSystemGraphNode::PostEditChangeProperty(FPropertyChangedEvent &PropertyChangedEvent)
+{
+    Super::PostEditChangeProperty(PropertyChangedEvent);
 }
