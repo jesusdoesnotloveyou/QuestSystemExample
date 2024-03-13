@@ -28,4 +28,9 @@ public:
     virtual FText GetNodeCategory_Implementation() const override;
     virtual FText GetNodeTitle_Implementation() const override;
 #endif
+
+protected:
+    // UFUNCTION(BlueprintCallable, Category="Game", meta = (WorldContext="WorldContextObject"))
+    // virtual UWorld* GetWorld(UObject* WorldContextObject) const;
+    
 };
