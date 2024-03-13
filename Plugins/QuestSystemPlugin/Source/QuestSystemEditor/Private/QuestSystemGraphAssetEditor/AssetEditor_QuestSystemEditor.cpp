@@ -696,7 +696,13 @@ void FAssetEditor_QuestSystemEditor::OnFinishedChangingProperties(const FPropert
 
 void FAssetEditor_QuestSystemEditor::OnNodeTitleCommitted(const FText& NewText, ETextCommit::Type CommitInfo, UEdGraphNode* NodeBeingChanged)
 {
-
+    if (NodeBeingChanged)
+    {
+        static const FText TranscationTitle = FText::FromString(FString(TEXT("Rename Node")));
+        const FScopedTransaction Transaction(TranscationTitle);
+        NodeBeingChanged->Modify();
+        NodeBeingChanged->OnRenameNode(NewText.ToString());
+    }
 }
 
 void FAssetEditor_QuestSystemEditor::ShowMessage()
