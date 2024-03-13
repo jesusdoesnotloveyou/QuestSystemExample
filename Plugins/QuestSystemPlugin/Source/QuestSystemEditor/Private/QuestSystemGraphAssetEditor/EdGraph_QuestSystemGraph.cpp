@@ -7,6 +7,8 @@
 #include "QuestSystemGraphNode.h"
 #include "Animation/NodeMappingContainer.h"
 
+DEFINE_LOG_CATEGORY_STATIC(LogEdGraph_QuestSystemGraph, All, All);
+
 UEdGraph_QuestSystemGraph::UEdGraph_QuestSystemGraph()
 {
 	
@@ -24,7 +26,7 @@ UQuestSystemGraph* UEdGraph_QuestSystemGraph::GetGenericGraph() const
 
 void UEdGraph_QuestSystemGraph::RebuildGraph()
 {
-	//LOG_INFO(TEXT("UMounteaDialogueGraphEdGraph::RebuildMounteaDialogueGraph has been called"));
+    UE_LOG(LogEdGraph_QuestSystemGraph, Display, TEXT("UEdGraph_QuestSystemGraph::RebuildMounteaDialogueGraph has been called"));
 
 	UQuestSystemGraph* Graph = GetGenericGraph();
 
@@ -37,11 +39,11 @@ void UEdGraph_QuestSystemGraph::RebuildGraph()
 			if (EdNode->QuestSystemGraphNode == nullptr)
 				continue;
 
-			UQuestSystemGraphNode* MounteaDialogueGraphNode = EdNode->QuestSystemGraphNode;
+			UQuestSystemGraphNode* QuestSystemGraphNode = EdNode->QuestSystemGraphNode;
 
-			NodeMap.Add(MounteaDialogueGraphNode, EdNode);
+			NodeMap.Add(QuestSystemGraphNode, EdNode);
 
-			Graph->AllNodes.Add(MounteaDialogueGraphNode);
+			Graph->AllNodes.Add(QuestSystemGraphNode);
 
 			//EdNode->SetDialogueNodeIndex(Graph->AllNodes.Find(EdNode->DialogueGraphNode));
 
@@ -49,7 +51,7 @@ void UEdGraph_QuestSystemGraph::RebuildGraph()
 			{
 				UEdGraphPin* Pin = EdNode->Pins[PinIdx];
 
-				if (Pin->Direction != EEdGraphPinDirection::EGPD_Output)
+				if (Pin->Direction != EGPD_Output)
 					continue;
 
 				for (int LinkToIdx = 0; LinkToIdx < Pin->LinkedTo.Num(); ++LinkToIdx)
@@ -70,13 +72,13 @@ void UEdGraph_QuestSystemGraph::RebuildGraph()
 
 					if (ChildNode != nullptr)
 					{
-						MounteaDialogueGraphNode->ChildrenNodes.Add(ChildNode);
+						QuestSystemGraphNode->ChildrenNodes.Add(ChildNode);
 
-						ChildNode->ParentNodes.Add(MounteaDialogueGraphNode);
+						ChildNode->ParentNodes.Add(QuestSystemGraphNode);
 					}
 					else
 					{
-						//EditorLOG_ERROR(TEXT("[RebuildMounteaDialogueGraph] Can't find child node"));
+						UE_LOG(LogEdGraph_QuestSystemGraph, Error, TEXT("[RebuildGraph] Can't find child node."));
 					}
 				}
 			}
@@ -89,7 +91,7 @@ void UEdGraph_QuestSystemGraph::RebuildGraph()
 
 			if (StartNode == nullptr || EndNode == nullptr || Edge == nullptr)
 			{
-				//EditorLOG_ERROR(TEXT("[RebuildMounteaDialogueGraph] Add edge failed."));
+			    UE_LOG(LogEdGraph_QuestSystemGraph, Error, TEXT("[RebuildGraph] Add edge failed."));
 				continue;
 			}
 

@@ -442,6 +442,30 @@ bool UAssetQuestSystemGraphSchema::TryCreateConnection(UEdGraphPin* A, UEdGraphP
     return false;
 }
 
+bool UAssetQuestSystemGraphSchema::CreateAutomaticConversionNodeAndConnections(UEdGraphPin *A, UEdGraphPin *B) const
+{
+        UEdGraphNode_QuestSystemGraphNode* NodeA = Cast<UEdGraphNode_QuestSystemGraphNode>(A->GetOwningNode());
+    	UEdGraphNode_QuestSystemGraphNode* NodeB = Cast<UEdGraphNode_QuestSystemGraphNode>(B->GetOwningNode());
+    
+    	// Are nodes and pins all valid?
+    	if (!NodeA || !NodeA->GetOutputPin() || !NodeB || !NodeB->GetInputPin()) return false;
+    	
+    	UQuestSystemGraph* Graph = NodeA->QuestSystemGraphNode->GetGraph();
+    
+    	FVector2D InitPos((NodeA->NodePosX + NodeB->NodePosX) / 2, (NodeA->NodePosY + NodeB->NodePosY) / 2);
+    
+    	FEdGraphSchemaAction_QuestSystemEditor_NewEdge Action;
+    	Action.NodeTemplate = NewObject<UEdNode_QuestSystemGraphEdge>(NodeA->GetGraph());
+    	Action.NodeTemplate->SetEdge(NewObject<UQuestSystemGraphEdge>(Action.NodeTemplate, Graph->EdgeType));
+    	UEdNode_QuestSystemGraphEdge* EdgeNode = Cast<UEdNode_QuestSystemGraphEdge>(Action.PerformAction(NodeA->GetGraph(), nullptr, InitPos, false));
+    
+    	// Always create connections from node A to B, don't allow adding in reverse
+    	EdgeNode->CreateConnections(NodeA, NodeB);
+    
+    	return true;
+}
+
+
 // Connection policy registered in FQuestSystemEditorModule
 // class FConnectionDrawingPolicy* UAssetQuestSystemGraphSchema::CreateConnectionDrawingPolicy(int32 InBackLayerID, int32 InFrontLayerID, float InZoomFactor, const FSlateRect &InClippingRect, FSlateWindowElementList &InDrawElements, UEdGraph *InGraphObj) const
 // {
