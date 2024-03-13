@@ -20,7 +20,7 @@
 #include "QuestSystemGraphAssetEditor/EdGraphNode_QuestSystemGraphNode.h"
 #include "QuestSystemGraphAssetEditor/EdNode_QuestSystemGraphEdge.h"
 
-DEFINE_LOG_CATEGORY_STATIC(AssetEditr_QuestSystemGraph, All, All);
+DEFINE_LOG_CATEGORY_STATIC(LogAssetEditor_QuestSystemGraph, All, All);
 
 #define LOCTEXT_NAMESPACE "QuestSystemEditor"
 
@@ -39,6 +39,7 @@ FAssetEditor_QuestSystemEditor::FAssetEditor_QuestSystemEditor()
 FAssetEditor_QuestSystemEditor::~FAssetEditor_QuestSystemEditor()
 {
 	EditingGraph = nullptr;
+    EditorSettings = nullptr;
 	
 }
 
@@ -118,8 +119,8 @@ void FAssetEditor_QuestSystemEditor::InitQuestSystemEditor(const EToolkitMode::T
 			)
 		);
 
-	const bool bCreateDefaultStandaloneMenu = true;
-	const bool bCreateDefaultToolbar = true;
+	constexpr bool bCreateDefaultStandaloneMenu = true;
+	constexpr bool bCreateDefaultToolbar = true;
     
 	FAssetEditorToolkit::InitAssetEditor(Mode, InitToolkitHost, QuestSystemEditorAppIdentifier, StandaloneDefaultLayout,
 	                                     bCreateDefaultStandaloneMenu,
@@ -130,23 +131,24 @@ void FAssetEditor_QuestSystemEditor::InitQuestSystemEditor(const EToolkitMode::T
 void FAssetEditor_QuestSystemEditor::RegisterTabSpawners(const TSharedRef<FTabManager>& InTabManager)
 {
 	WorkspaceMenuCategory = InTabManager->AddLocalWorkspaceMenuCategory(LOCTEXT("WorkspaceMenu_QuestSystemEditor", "Quest System Editor"));
-	
+    const auto WorkspaceMenuCategoryRef = WorkspaceMenuCategory.ToSharedRef();
+    
 	FAssetEditorToolkit::RegisterTabSpawners(InTabManager);
     
 	InTabManager->RegisterTabSpawner(ViewportTabId, FOnSpawnTab::CreateSP(this, &FAssetEditor_QuestSystemEditor::SpawnTab_Viewport))
 		.SetDisplayName( LOCTEXT("ViewportTab", "Viewport") )
-		.SetGroup(WorkspaceMenuCategory.ToSharedRef())
+		.SetGroup(WorkspaceMenuCategoryRef)
 		.SetIcon(FSlateIcon(FEditorStyle::GetStyleSetName(), "LevelEditor.Tabs.Viewports"));
 	
 	InTabManager->RegisterTabSpawner(PropertiesTabId, FOnSpawnTab::CreateSP(this, &FAssetEditor_QuestSystemEditor::SpawnTab_Details))
 		.SetDisplayName( LOCTEXT("PropertiesTab", "Details") )
-		.SetGroup(WorkspaceMenuCategory.ToSharedRef())
+		.SetGroup(WorkspaceMenuCategoryRef)
 		.SetIcon(FSlateIcon(FEditorStyle::GetStyleSetName(), "LevelEditor.Tabs.Details"));
 
     InTabManager->RegisterTabSpawner(SettingsTabId, FOnSpawnTab::CreateSP(this, &FAssetEditor_QuestSystemEditor::SpawnTab_EditorSettings))
         .SetDisplayName( LOCTEXT("SettingsTab", "Editor Settings") )
-        .SetGroup(WorkspaceMenuCategory.ToSharedRef())
-        .SetIcon(FSlateIcon(FEditorStyle::GetStyleSetName(), "LevelEditor.Tabs.Details"));
+        .SetGroup(WorkspaceMenuCategoryRef)
+        .SetIcon(FSlateIcon(FEditorStyle::GetStyleSetName(), "GraphEditor.EventGraph_16x"));
 }
 
 void FAssetEditor_QuestSystemEditor::UnregisterTabSpawners(const TSharedRef<FTabManager>& InTabManager)
@@ -158,6 +160,12 @@ void FAssetEditor_QuestSystemEditor::UnregisterTabSpawners(const TSharedRef<FTab
 	InTabManager->UnregisterTabSpawner(SettingsTabId);
 }
 
+bool FAssetEditor_QuestSystemEditor::IsAssetEditor() const
+{
+    if (!FAssetEditorToolkit::IsAssetEditor()) return false;
+    return true;
+}
+
 void FAssetEditor_QuestSystemEditor::AddReferencedObjects(class FReferenceCollector& Collector)
 {
     Collector.AddReferencedObject(EditingGraph);
@@ -166,8 +174,8 @@ void FAssetEditor_QuestSystemEditor::AddReferencedObjects(class FReferenceCollec
 
 void FAssetEditor_QuestSystemEditor::CreateInternalWidgets()
 {
-    UE_LOG(AssetEditr_QuestSystemGraph, Warning, TEXT("Internal editor's widgets are creating"));
-
+    UE_LOG(LogAssetEditor_QuestSystemGraph, Warning, TEXT("Internal editor's widgets are creating"));
+    
     GraphViewportWidget = CreateGraphEditorWidget();
     
     const FDetailsViewArgs DetailsViewArgs(false, false, true, FDetailsViewArgs::HideNameArea, true, this);
@@ -184,8 +192,6 @@ void FAssetEditor_QuestSystemEditor::CreateInternalWidgets()
         
     EditorSettingsView = PropertyEditorModule.CreateDetailView(SettingsViewArgs);
     EditorSettingsView->SetObject(GetEditorSettings());
-    
-    //GEditor->GetEditorWorldContext().World(); // Getting World in plugins
 }
 
 UGraphEditorSettings_QuestSystemEditor* FAssetEditor_QuestSystemEditor::GetEditorSettings() const
@@ -196,13 +202,13 @@ UGraphEditorSettings_QuestSystemEditor* FAssetEditor_QuestSystemEditor::GetEdito
 TSharedRef<SDockTab> FAssetEditor_QuestSystemEditor::SpawnTab_Details(const FSpawnTabArgs& Args)
 {
 	check(Args.GetTabId() == PropertiesTabId);
-    UE_LOG(AssetEditr_QuestSystemGraph, Warning, TEXT("Details Tab is spawning"));
+    UE_LOG(LogAssetEditor_QuestSystemGraph, Warning, TEXT("Details Tab is spawning"));
     
     return SNew(SDockTab)
         //+ SVerticalBox::Slot()
         //.FillHeight(1.0f)
         //.HAlign(HAlign_Fill)
-        .TabRole(ETabRole::PanelTab)
+        .TabRole(PanelTab)
 		[
 		    DetailsView.ToSharedRef()
 		];
@@ -284,6 +290,15 @@ void FAssetEditor_QuestSystemEditor::CreateEdGraph()
 	}
 }
 
+// Need a declaration in .h
+// void FAssetEditor_QuestSystemEditor::SetNewEditingObject(UQuestSystemGraph* NewEditingGraph)
+// {
+//     if (!NewEditingGraph || NewEditingGraph == EditingGraph) return;
+//     RemoveEditingObject(EditingGraph);
+//     EditingGraph = NewEditingGraph;
+//     AddEditingObject(NewEditingGraph);
+// }
+
 void FAssetEditor_QuestSystemEditor::RebuildQuestSystemGraph()
 {
     // gotta create Log message if Editing graph is nullptr
@@ -340,6 +355,12 @@ void FAssetEditor_QuestSystemEditor::CreateCommandList()
 			FExecuteAction::CreateSP(this, &FAssetEditor_QuestSystemEditor::DuplicateNodes),
 			FCanExecuteAction::CreateSP(this, &FAssetEditor_QuestSystemEditor::CanDuplicateNodes)
 			);
+
+	    GraphEditorCommands->MapAction(FGenericCommands::Get().Rename,
+        FExecuteAction::CreateRaw(this, &FAssetEditor_QuestSystemEditor::OnRenameNode),
+        FCanExecuteAction::CreateRaw(this, &FAssetEditor_QuestSystemEditor::CanRenameNodes)
+        );
+	    
 	    GraphEditorCommands->MapAction(FGraphEditorCommands::Get().CreateComment,
         FExecuteAction::CreateRaw(this, &FAssetEditor_QuestSystemEditor::OnCreateComment),
         FCanExecuteAction::CreateRaw(this, &FAssetEditor_QuestSystemEditor::CanCreateComment)
@@ -349,6 +370,7 @@ void FAssetEditor_QuestSystemEditor::CreateCommandList()
 
 void FAssetEditor_QuestSystemEditor::OnGraphChanged(const FEdGraphEditAction& Action)
 {
+
 }
 
 FGraphPanelSelectionSet FAssetEditor_QuestSystemEditor::GetSelectedNodes() const
@@ -356,8 +378,7 @@ FGraphPanelSelectionSet FAssetEditor_QuestSystemEditor::GetSelectedNodes() const
 	FGraphPanelSelectionSet CurrentSelectionSet;
 	const TSharedPtr<SGraphEditor> FocusedGraphEditor = GetCurrentGraphEditor();
 
-	// TO DO: check the difference between IsValid and if()
-	// Check the content in GraphEditor.h
+	// todo: Check the content in GraphEditor.h
 	if (FocusedGraphEditor.IsValid())
 	{
 		CurrentSelectionSet = FocusedGraphEditor->GetSelectedNodes();
@@ -575,6 +596,32 @@ void FAssetEditor_QuestSystemEditor::DuplicateNodes()
 	PasteNodes();
 }
 
+bool FAssetEditor_QuestSystemEditor::CanRenameNodes() const
+{
+    /**
+     * Renaming is allowed to any node for now, 
+     * but better way to implement this function is by using GraphEditorSettings pointer.
+     * GraphEditorSettings contains options and permissions for graph nodes.
+     * We should also be able to rename only one node at a same time.
+     */
+    return GetSelectedNodes().Num() == 1;
+}
+
+void FAssetEditor_QuestSystemEditor::OnRenameNode()
+{
+    TSharedPtr<SGraphEditor> CurrentGraphEditor = GetCurrentGraphEditor();
+    if (!CurrentGraphEditor.IsValid()) return;
+
+    const FGraphPanelSelectionSet SelectedNode = CurrentGraphEditor->GetSelectedNodes();
+
+    UEdGraphNode* Node = Cast<UEdGraphNode>(*(FGraphPanelSelectionSet::TConstIterator(SelectedNode)));
+
+    if (Node && Node->bCanRenameNode)
+    {
+        CurrentGraphEditor->IsNodeTitleVisible(Node, true);
+    }
+}
+
 void FAssetEditor_QuestSystemEditor::DeleteSelectedDuplicatableNodes()
 {
 	TSharedPtr<SGraphEditor> CurrentGraphEditor = GetCurrentGraphEditor();
@@ -605,15 +652,10 @@ void FAssetEditor_QuestSystemEditor::DeleteSelectedDuplicatableNodes()
 	}
 }
 
-void FAssetEditor_QuestSystemEditor::OnCreateComment()
-{
-    
-}
+// TODO: add possibility to create comments (not neccessary I think cause )
+void FAssetEditor_QuestSystemEditor::OnCreateComment() {}
 
-bool FAssetEditor_QuestSystemEditor::CanCreateComment()
-{
-    return true;
-}
+bool FAssetEditor_QuestSystemEditor::CanCreateComment() { return true; }
 
 // TODO: make nodes showing up in the property view on selecting
 void FAssetEditor_QuestSystemEditor::OnSelectedNodesChanged(const TSet<UObject*>& NewSelection)
@@ -638,7 +680,10 @@ void FAssetEditor_QuestSystemEditor::OnSelectedNodesChanged(const TSet<UObject*>
 
 void FAssetEditor_QuestSystemEditor::OnNodeDoubleClicked(UEdGraphNode* Node)
 {
-    
+    if (GraphEditorCommands->TryExecuteAction((FGenericCommands::Get().Rename).ToSharedRef()))
+    {
+        UE_LOG(LogAssetEditor_QuestSystemGraph, Warning, TEXT("OnNodeDoubleClicked is called"));
+    }
 }
 
 void FAssetEditor_QuestSystemEditor::OnFinishedChangingProperties(const FPropertyChangedEvent& PropertyChangedEvent)
@@ -651,6 +696,7 @@ void FAssetEditor_QuestSystemEditor::OnFinishedChangingProperties(const FPropert
 
 void FAssetEditor_QuestSystemEditor::OnNodeTitleCommitted(const FText& NewText, ETextCommit::Type CommitInfo, UEdGraphNode* NodeBeingChanged)
 {
+
 }
 
 void FAssetEditor_QuestSystemEditor::ShowMessage()
