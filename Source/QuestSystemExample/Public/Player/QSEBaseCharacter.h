@@ -7,6 +7,7 @@
 #include "QSEBaseCharacter.generated.h"
 
 class AQSEBaseQuest;
+class UQuestSystemManagerComponent;
 
 UCLASS()
 class QUESTSYSTEMEXAMPLE_API AQSEBaseCharacter : public ACharacter
@@ -15,7 +16,7 @@ class QUESTSYSTEMEXAMPLE_API AQSEBaseCharacter : public ACharacter
 protected:
 
     UPROPERTY(VisibleAnywhere, Category = "Quests")
-    class UQuestSystemManager* Manager;
+    UQuestSystemManagerComponent* ManagerComponent;
 
 private:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))

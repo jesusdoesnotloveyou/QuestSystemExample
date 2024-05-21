@@ -58,15 +58,19 @@ public:
 protected:
     TSharedRef<SDockTab> SpawnTab_Viewport(const FSpawnTabArgs &Args);
     TSharedRef<SDockTab> SpawnTab_Details(const FSpawnTabArgs &Args);
+    TSharedRef<SDockTab> SpawnTab_Preview(const FSpawnTabArgs &Args);
     TSharedRef<SDockTab> SpawnTab_EditorSettings(const FSpawnTabArgs &Args);
 
+    void ExtendMenu();
+    void ExtendToolbar();
+    
 private:
     TSharedRef<SGraphEditor> CreateGraphEditorWidget();
+    TSharedRef<SDockTab> CreatePreviewWidget();
     void CreateInternalWidgets();
 
-    void RebuildQuestSystemGraph();
-    
     void CreateEdGraph();
+    void RebuildQuestSystemGraph();
 
     bool IsPropertyEditable() const;
 
@@ -80,6 +84,9 @@ private:
     /**	The tab ids for all the tabs used */
     static const FName SettingsTabId;
 
+    /** The tab ids for level preview */
+    static const FName PreviewTabId;
+    
     /** App Identifier. Technically, all simple editors are the same app, despite editing a variety of assets. */
     static const FName QuestSystemEditorAppIdentifier;
 
@@ -135,6 +142,8 @@ protected:
     TSharedPtr<class FAssetQuestEditorToolbar> ToolbarBuilder;
 
     TSharedPtr<SGraphEditor> GraphViewportWidget;
+    // Gotta change to custom editor viewport SWidget 
+    TSharedPtr<SWidget> PreviewWidget;
     TSharedPtr<IDetailsView> DetailsView;
     TSharedPtr<IDetailsView> EditorSettingsView;
 

@@ -49,9 +49,10 @@ public:
 
 #if WITH_EDITOR
 	virtual void PostEditUndo() override;
+    // Method to execute when node's properties are changed
     virtual void PostEditChangeProperty(FPropertyChangedEvent &PropertyChangedEvent) override;
 #endif
-    /** check if node can accept breakpoints */
+    /** check if the node can accept breakpoints */
     /** that function in UK2Node class */
     virtual bool CanPlaceBreakpoints() const { return false; }
 

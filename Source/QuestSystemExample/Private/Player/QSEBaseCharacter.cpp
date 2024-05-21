@@ -6,11 +6,14 @@
 #include "Camera/CameraComponent.h"
 #include "Components/CapsuleComponent.h"
 #include "Components/InputComponent.h"
+#include "Components/QuestSystemManagerComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "GameFramework/SpringArmComponent.h"
 
 #include "Kismet/GameplayStatics.h"
 #include "QuestSystemEntities/QSEBaseQuest.h"
+
+#include "QuestSystemRuntime/Public/Components/QuestSystemManagerComponent.h"
 
 DEFINE_LOG_CATEGORY_STATIC(LogQSEBaseCharacter, All, All);
 
@@ -30,14 +33,17 @@ AQSEBaseCharacter::AQSEBaseCharacter()
 	GetCharacterMovement()->JumpZVelocity = 600.f;
 	GetCharacterMovement()->AirControl = 0.2f;
 
-	CameraBoom = CreateDefaultSubobject<USpringArmComponent>(TEXT("CameraBoom"));
+	CameraBoom = CreateDefaultSubobject<USpringArmComponent>("CameraBoom");
 	CameraBoom->SetupAttachment(RootComponent);
 	CameraBoom->TargetArmLength = 300.0f; // The camera follows at this distance behind the character	
 	CameraBoom->bUsePawnControlRotation = true; // Rotate the arm based on the controller
 
-	FollowCamera = CreateDefaultSubobject<UCameraComponent>(TEXT("FollowCamera"));
+	FollowCamera = CreateDefaultSubobject<UCameraComponent>("FollowCamera");
 	FollowCamera->SetupAttachment(CameraBoom, USpringArmComponent::SocketName); // Attach the camera to the end of the boom and let the boom adjust to match the controller orientation
 	FollowCamera->bUsePawnControlRotation = false; // Camera does not rotate relative to arm
+
+    // Quest System
+    ManagerComponent = CreateDefaultSubobject<UQuestSystemManagerComponent>("QuestManagerComponent");
 }
 
 void AQSEBaseCharacter::BeginPlay()
