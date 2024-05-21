@@ -52,8 +52,14 @@ private:
     UWorld* OwningWorld;
     
 public:
+
+    UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "BaseQuestSystemNode")
+    TArray<UQuestSystemGraphNode*> AllowedInputClasses;
+    
 	UFUNCTION(BlueprintCallable, Category = "QuestSystemGraphNode")
 	bool IsLeafNode() const;
+
+    virtual UWorld* GetWorld() const override;
 
 #if WITH_EDITORONLY_DATA
 	UPROPERTY(VisibleDefaultsOnly, Category = "QuestSystemGraphNodeEditor")
@@ -103,7 +109,7 @@ public:
 
 	virtual bool IsNameEditable() const;
 
-    virtual FLinearColor GetBackgroundColor() const;
+    virtual FLinearColor GetBackgroundColor() const;    
 
 	virtual void SetNodeTitle(const FText& NewTitle);
 

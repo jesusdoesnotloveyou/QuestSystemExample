@@ -1,4 +1,4 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+// Quest System by JDNLY. All Rights Reserved
 
 #pragma once
 
@@ -7,12 +7,18 @@
 #include "QSEBaseCharacter.generated.h"
 
 class AQSEBaseQuest;
+class UQuestSystemManagerComponent;
 
 UCLASS()
 class QUESTSYSTEMEXAMPLE_API AQSEBaseCharacter : public ACharacter
 {
 	GENERATED_BODY()
+protected:
 
+    UPROPERTY(VisibleAnywhere, Category = "Quests")
+    UQuestSystemManagerComponent* ManagerComponent;
+
+private:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
 	class USpringArmComponent* CameraBoom;
 
@@ -22,7 +28,7 @@ class QUESTSYSTEMEXAMPLE_API AQSEBaseCharacter : public ACharacter
 public:
 	AQSEBaseCharacter();
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "QuestSystem")
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Quests")
 	TArray<AActor*> Quests;
 	
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera)

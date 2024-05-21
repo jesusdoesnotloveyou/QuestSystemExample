@@ -4,12 +4,16 @@
 #include "QuestSystemGraph.h"
 #include "Chaos/SAT.h"
 
+DEFINE_LOG_CATEGORY_STATIC(LogQuestSystemGraphNode, All, All);
+DECLARE_LOG_CATEGORY_EXTERN(LogQuestSystemGraphNodeTestExtern, Warning, All);
+
 #define LOCTEXT_NAMESPACE "QuestSystemGraphNode"
 
 UQuestSystemGraphNode::UQuestSystemGraphNode()
 {
+    UE_LOG(LogQuestSystemGraphNode, Error, TEXT("Test message for plugin log category"));
     NodeGUID = FGuid::NewGuid();
-    
+
 #if WITH_EDITORONLY_DATA
 	CompatibleGraphType = UQuestSystemGraph::StaticClass();
 	BackgroundColor = FLinearColor::Black;
@@ -33,6 +37,17 @@ UQuestSystemGraph* UQuestSystemGraphNode::GetGraph() const
 bool UQuestSystemGraphNode::IsLeafNode() const
 {
 	return ChildrenNodes.Num() == 0;
+}
+
+UWorld* UQuestSystemGraphNode::GetWorld() const
+{
+    if (OwningWorld) return OwningWorld;
+
+    // Might need to make separate function for getting Level
+    const ULevel* Level = GetTypedOuter<ULevel>();
+    //~
+    if (Level) return Level->GetWorld();
+    return nullptr;
 }
 
 FText UQuestSystemGraphNode::GetDescription_Implementation() const

@@ -1,4 +1,4 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+// Quest System by JDNLY. All Rights Reserved
 
 #include "Player/QSEPlayerController.h"
 #include "Blueprint/UserWidget.h"

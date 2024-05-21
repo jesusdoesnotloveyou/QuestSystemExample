@@ -31,9 +31,14 @@ public:
 	virtual void AutowireNewNode(UEdGraphPin* FromPin) override;
     //~ End UEdGraphNode Interface
 
+    // CanUserCopyNodes() and CanUserPasteNodes() may not be necessary, cause AssetEditor uses CanUserDeleteNode() and CanDuplicateNode() to check if it can copy or paste nodes
+    virtual bool CanUserCopyNodes() const;
     virtual bool CanUserDeleteNode() const override;
 	virtual bool CanDuplicateNode() const override;
-	//virtual bool CanUserPasteNodes() const;
+	virtual bool CanUserPasteNodes() const;
+
+    // Should be connected somehow with the OnRenameNode() in FAssetEditor_QuestSystemEditor
+    virtual void OnRenameNode(const FString& NewName) override {}
     
     virtual void NodeConnectionListChanged() override;
     
@@ -44,16 +49,23 @@ public:
 
 #if WITH_EDITOR
 	virtual void PostEditUndo() override;
+    // Method to execute when node's properties are changed
     virtual void PostEditChangeProperty(FPropertyChangedEvent &PropertyChangedEvent) override;
 #endif
-    /** check if node can accept breakpoints */
+    /** check if the node can accept breakpoints */
     /** that function in UK2Node class */
     virtual bool CanPlaceBreakpoints() const { return false; }
 
 public: 
-    UPROPERTY(EditDefaultsOnly, Category = "QuestSystemGraphNode")
+    UPROPERTY(VisibleAnywhere, Instanced, Category = "QuestSystemGraphNode")
     UQuestSystemGraphNode* QuestSystemGraphNode;
 
     // Need a slate class for node
     SGraphNode_QuestSystemGraphNode* SEdNode;
+
+private:
+    bool bAllowCopy;
+    bool bAllowDelete;
+    bool bAllowDuplicate;
+    bool bAllowPaste;
 };

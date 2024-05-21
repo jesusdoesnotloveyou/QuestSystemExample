@@ -10,6 +10,12 @@ UEdGraphNode_QuestSystemGraphNode::UEdGraphNode_QuestSystemGraphNode()
 	bCanRenameNode = true;
 	bCanResizeNode = true;
 	bHasCompilerMessage = false;
+
+    // Allow to make all this actions with node in the editor        
+    bAllowCopy = true;
+    bAllowDelete = true;
+    bAllowDuplicate = true;
+    bAllowPaste = true;
 }
 
 UEdGraphNode_QuestSystemGraphNode::~UEdGraphNode_QuestSystemGraphNode()
@@ -44,15 +50,27 @@ void UEdGraphNode_QuestSystemGraphNode::AutowireNewNode(UEdGraphPin* FromPin)
 	}
 }
 
-// TODO: two functions below might need overriding more complex than these 
+// TODO: these four functions below might need overriding more complex than these 
+bool UEdGraphNode_QuestSystemGraphNode::CanUserCopyNodes() const
+{
+    return bAllowCopy;
+}
+
 bool UEdGraphNode_QuestSystemGraphNode::CanUserDeleteNode() const
 {
-    return Super::CanUserDeleteNode();
+    if (!Super::CanUserDeleteNode()) return false;
+    return bAllowDelete;
 }
 
 bool UEdGraphNode_QuestSystemGraphNode::CanDuplicateNode() const
 {
-    return Super::CanDuplicateNode();
+    if (!Super::CanDuplicateNode()) return false;
+    return bAllowDuplicate;
+}
+
+bool UEdGraphNode_QuestSystemGraphNode::CanUserPasteNodes() const
+{
+    return bAllowPaste;
 }
 
 void UEdGraphNode_QuestSystemGraphNode::NodeConnectionListChanged()

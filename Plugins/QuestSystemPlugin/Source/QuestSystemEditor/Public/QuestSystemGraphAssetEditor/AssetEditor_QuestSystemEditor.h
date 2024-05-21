@@ -32,19 +32,24 @@ public:
 
     void InitQuestSystemEditor(const EToolkitMode::Type Mode, const TSharedPtr<IToolkitHost> &InitToolkitHost,
                                UQuestSystemGraph *GraphToEdit);
+    
+    //~ Begin of FGCObject Interface
+    virtual void AddReferencedObjects(class FReferenceCollector &Collector) override;
+    //~ End of FGCObject Interface
 
+    //~ Begin of IToolkit Interface
     virtual void RegisterTabSpawners(const TSharedRef<FTabManager> &InTabManager) override;
     virtual void UnregisterTabSpawners(const TSharedRef<FTabManager> &InTabManager) override;
-
-    // Inherited from FGCObject
-    virtual void AddReferencedObjects(class FReferenceCollector &Collector) override;
-
+    virtual bool IsAssetEditor() const override;
     virtual FName GetToolkitFName() const override;
     virtual FText GetBaseToolkitName() const override;
     // virtual FText GetToolkitName() const override;
     // virtual FText GetToolkitToolTipText() const override;
-    virtual FLinearColor GetWorldCentricTabColorScale() const override;
     virtual FString GetWorldCentricTabPrefix() const override;
+    virtual FLinearColor GetWorldCentricTabColorScale() const override;
+    //~ End of IToolkit Interface
+
+    // Inherited form FAssetEditorToolkit
     //virtual FString GetDocumentationLink() const override;
     //virtual void SaveAsset_Execute() override;
 
@@ -53,15 +58,19 @@ public:
 protected:
     TSharedRef<SDockTab> SpawnTab_Viewport(const FSpawnTabArgs &Args);
     TSharedRef<SDockTab> SpawnTab_Details(const FSpawnTabArgs &Args);
+    TSharedRef<SDockTab> SpawnTab_Preview(const FSpawnTabArgs &Args);
     TSharedRef<SDockTab> SpawnTab_EditorSettings(const FSpawnTabArgs &Args);
 
+    void ExtendMenu();
+    void ExtendToolbar();
+    
 private:
     TSharedRef<SGraphEditor> CreateGraphEditorWidget();
+    TSharedRef<SDockTab> CreatePreviewWidget();
     void CreateInternalWidgets();
 
-    void RebuildQuestSystemGraph();
-    
     void CreateEdGraph();
+    void RebuildQuestSystemGraph();
 
     bool IsPropertyEditable() const;
 
@@ -75,6 +84,9 @@ private:
     /**	The tab ids for all the tabs used */
     static const FName SettingsTabId;
 
+    /** The tab ids for level preview */
+    static const FName PreviewTabId;
+    
     /** App Identifier. Technically, all simple editors are the same app, despite editing a variety of assets. */
     static const FName QuestSystemEditorAppIdentifier;
 
@@ -103,31 +115,35 @@ protected:
     void DuplicateNodes();
     void DeleteSelectedDuplicatableNodes();
 
+    bool CanRenameNodes() const;
+    void OnRenameNode();
+
     void OnCreateComment();
     bool CanCreateComment();
 
+    // Delegates
     /** Called when the selection changes in the GraphEditor */
     void OnSelectedNodesChanged(const TSet<UObject*> &NewSelection);
-
     /** Called when a node is double clicked */
     void OnNodeDoubleClicked(UEdGraphNode* Node);
-    
-    void OnFinishedChangingProperties(const FPropertyChangedEvent& PropertyChangedEvent);
-    
     /** Called when a node's title is committed for a rename */
     void OnNodeTitleCommitted(const FText &NewText, ETextCommit::Type CommitInfo, UEdGraphNode *NodeBeingChanged);
-
+    void OnFinishedChangingProperties(const FPropertyChangedEvent& PropertyChangedEvent);
+    
     void ShowMessage();
 
 protected:
     UGraphEditorSettings_QuestSystemEditor* EditorSettings;
 
-    UQuestSystemGraph *EditingGraph;
-
+    // The object we're currently editing
+    UQuestSystemGraph* EditingGraph;
+    
     //Toolbar
     TSharedPtr<class FAssetQuestEditorToolbar> ToolbarBuilder;
 
     TSharedPtr<SGraphEditor> GraphViewportWidget;
+    // Gotta change to custom editor viewport SWidget 
+    TSharedPtr<SWidget> PreviewWidget;
     TSharedPtr<IDetailsView> DetailsView;
     TSharedPtr<IDetailsView> EditorSettingsView;
 
