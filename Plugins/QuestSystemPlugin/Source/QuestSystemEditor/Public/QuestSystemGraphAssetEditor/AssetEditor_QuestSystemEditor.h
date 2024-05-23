@@ -8,6 +8,7 @@
 #include "GraphEditor.h"
 #include "WorkflowOrientedApp/WorkflowTabFactory.h"
 
+// Forward declarations
 class FAssetQuestEditorToolbar;
 class UQuestSystemGraph;
 class UGraphEditorSettings_QuestSystemEditor;
@@ -53,7 +54,7 @@ public:
     //virtual FString GetDocumentationLink() const override;
     //virtual void SaveAsset_Execute() override;
 
-    UGraphEditorSettings_QuestSystemEditor *GetEditorSettings() const;
+    UGraphEditorSettings_QuestSystemEditor* GetEditorSettings() const;
 
 protected:
     TSharedRef<SDockTab> SpawnTab_Viewport(const FSpawnTabArgs &Args);

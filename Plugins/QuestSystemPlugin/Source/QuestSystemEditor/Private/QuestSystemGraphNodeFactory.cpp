@@ -9,7 +9,6 @@
 #include "QuestSystemGraphAssetEditor/SGraphNode_QuestSystemGraphEdge.h"
 #include "QuestSystemGraphAssetEditor/ConnectionDrawingPolicy_QuestSystemEditor.h"
 #include "KismetPins/SGraphPinExec.h"
-//#include "EdGraphSchema_K2.h"
 
 TSharedPtr<SGraphNode> FQuestSystemGraphNodeFactory::CreateNode(UEdGraphNode *Node) const
 {
