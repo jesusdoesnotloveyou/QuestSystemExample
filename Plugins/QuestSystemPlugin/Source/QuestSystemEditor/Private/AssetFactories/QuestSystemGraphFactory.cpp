@@ -1,7 +1,7 @@
 // Quest System by JDNLY. All Rights Reserved
 
 
-#include "QuestSystemGraphFactory.h"
+#include "AssetFactories/QuestSystemGraphFactory.h"
 
 UQuestSystemGraphFactory::UQuestSystemGraphFactory()
 {

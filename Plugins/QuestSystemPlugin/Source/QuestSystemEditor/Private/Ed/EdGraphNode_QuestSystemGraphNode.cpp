@@ -1,8 +1,8 @@
 // Quest System by JDNLY. All Rights Reserved
 
-#include "QuestSystemGraphAssetEditor/EdGraphNode_QuestSystemGraphNode.h"
-#include "QuestSystemGraphAssetEditor/EdGraph_QuestSystemGraph.h"
-#include "QuestSystemGraphAssetEditor/AssetQuestSystemGraphSchema.h"
+#include "Ed/EdGraphNode_QuestSystemGraphNode.h"
+#include "Ed/EdGraph_QuestSystemGraph.h"
+#include "GraphSchema/AssetQuestSystemGraphSchema.h"
 #include "QuestSystemGraphNode.h"
 
 UEdGraphNode_QuestSystemGraphNode::UEdGraphNode_QuestSystemGraphNode()

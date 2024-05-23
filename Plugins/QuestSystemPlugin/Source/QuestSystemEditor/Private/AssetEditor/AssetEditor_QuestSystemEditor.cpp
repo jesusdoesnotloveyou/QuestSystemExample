@@ -1,24 +1,24 @@
 // Quest System by JDNLY. All Rights Reserved
 
-#include "QuestSystemGraphAssetEditor/AssetEditor_QuestSystemEditor.h"
+#include "AssetEditor/AssetEditor_QuestSystemEditor.h"
 
 #include "AITestsCommon.h"
 #include "QuestSystemRuntime/Public/QuestSystemGraph.h"
-#include "QuestSystemGraphAssetEditor/AssetQuestSystemGraphSchema.h"
-#include "QuestSystemGraphAssetEditor/EdGraph_QuestSystemGraph.h"
-#include "QuestSystemGraphAssetEditor/AssetQuestEditorToolbar.h"
+#include "GraphSchema/AssetQuestSystemGraphSchema.h"
+#include "Ed/EdGraph_QuestSystemGraph.h"
+#include "AssetEditor/AssetQuestEditorToolbar.h"
 #include "EdGraphUtilities.h"
 #include "Framework/Commands/GenericCommands.h"
 #include "GraphEditorActions.h"
-#include "QuestSystemGraphAssetEditor/GraphEditorSettings_QuestSystemEditor.h"
+#include "Settings//GraphEditorSettings_QuestSystemEditor.h"
 #include "ISettingsViewer.h"
 
 #include "HAL/PlatformApplicationMisc.h"
 #include "Kismet2/BlueprintEditorUtils.h"
 #include "EditorStyle/Public/EditorStyleSet.h"
 
-#include "QuestSystemGraphAssetEditor/EdGraphNode_QuestSystemGraphNode.h"
-#include "QuestSystemGraphAssetEditor/EdNode_QuestSystemGraphEdge.h"
+#include "Ed/EdGraphNode_QuestSystemGraphNode.h"
+#include "Ed/EdNode_QuestSystemGraphEdge.h"
 
 DEFINE_LOG_CATEGORY_STATIC(LogAssetEditor_QuestSystemGraph, All, All);
 

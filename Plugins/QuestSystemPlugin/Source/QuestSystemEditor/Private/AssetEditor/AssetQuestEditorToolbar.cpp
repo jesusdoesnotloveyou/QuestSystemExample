@@ -1,7 +1,7 @@
 // Quest System by JDNLY. All Rights Reserved
 
-#include "QuestSystemGraphAssetEditor/AssetQuestEditorToolbar.h"
-#include "QuestSystemGraphAssetEditor/AssetEditor_QuestSystemEditor.h"
+#include "AssetEditor/AssetQuestEditorToolbar.h"
+#include "AssetEditor/AssetEditor_QuestSystemEditor.h"
 
 #define LOCTEXT_NAMESPACE "AssetQuestEditorToolbar"
 

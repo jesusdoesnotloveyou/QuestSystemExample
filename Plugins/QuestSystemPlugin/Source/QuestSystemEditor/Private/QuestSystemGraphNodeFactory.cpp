@@ -2,14 +2,13 @@
 
 #include "QuestSystemGraphNodeFactory.h"
 #include "EdGraph/EdGraphNode.h"
-#include "QuestSystemGraphAssetEditor/AssetQuestSystemGraphSchema.h"
-#include "QuestSystemGraphAssetEditor/EdGraphNode_QuestSystemGraphNode.h"
-#include "QuestSystemGraphAssetEditor/EdNode_QuestSystemGraphEdge.h"
-#include "QuestSystemGraphAssetEditor/SGraphNode_QuestSystemGraphNode.h"
-#include "QuestSystemGraphAssetEditor/SGraphNode_QuestSystemGraphEdge.h"
+#include "GraphSchema//AssetQuestSystemGraphSchema.h"
+#include "Ed/EdGraphNode_QuestSystemGraphNode.h"
+#include "Ed/EdNode_QuestSystemGraphEdge.h"
+#include "Ed/SGraphNode_QuestSystemGraphNode.h"
+#include "Ed/SGraphNode_QuestSystemGraphEdge.h"
 #include "QuestSystemGraphAssetEditor/ConnectionDrawingPolicy_QuestSystemEditor.h"
 #include "KismetPins/SGraphPinExec.h"
-//#include "EdGraphSchema_K2.h"
 
 TSharedPtr<SGraphNode> FQuestSystemGraphNodeFactory::CreateNode(UEdGraphNode *Node) const
 {

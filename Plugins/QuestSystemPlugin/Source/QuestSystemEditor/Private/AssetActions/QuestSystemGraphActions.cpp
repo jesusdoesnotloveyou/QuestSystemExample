@@ -1,8 +1,8 @@
 // Quest System by JDNLY. All Rights Reserved
 
-#include "QuestSystemGraphActions.h"
+#include "AssetActions/QuestSystemGraphActions.h"
 #include "QuestSystemGraph.h"
-#include "QuestSystemGraphAssetEditor/AssetEditor_QuestSystemEditor.h"
+#include "AssetEditor/AssetEditor_QuestSystemEditor.h"
 
 #define LOCTEXT_NAMESPACE "QuestSystemGraphActions"
 

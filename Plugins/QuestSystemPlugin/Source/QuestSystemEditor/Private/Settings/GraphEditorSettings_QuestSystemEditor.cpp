@@ -1,6 +1,6 @@
 // Quest System by JDNLY. All Rights Reserved
 
-#include "QuestSystemGraphAssetEditor/GraphEditorSettings_QuestSystemEditor.h"
+#include "Settings/GraphEditorSettings_QuestSystemEditor.h"
 
 UGraphEditorSettings_QuestSystemEditor::UGraphEditorSettings_QuestSystemEditor()
 {
