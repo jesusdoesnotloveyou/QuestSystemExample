@@ -2,8 +2,8 @@
 
 #include "QuestSystemGraphAssetEditor/ConnectionDrawingPolicy_QuestSystemEditor.h"
 
-#include "QuestSystemGraphAssetEditor/EdGraphNode_QuestSystemGraphNode.h"
-#include "QuestSystemGraphAssetEditor/EdNode_QuestSystemGraphEdge.h"
+#include "Ed/EdGraphNode_QuestSystemGraphNode.h"
+#include "Ed/EdNode_QuestSystemGraphEdge.h"
 
 FConnectionDrawingPolicy_QuestSystemEditor::FConnectionDrawingPolicy_QuestSystemEditor(int32 InBackLayerID, int32 InFrontLayerID, float ZoomFactor, const FSlateRect& InClippingRect, FSlateWindowElementList& InDrawElements, UEdGraph* InGraphObj)
     : FConnectionDrawingPolicy(InBackLayerID, InFrontLayerID, ZoomFactor, InClippingRect, InDrawElements)

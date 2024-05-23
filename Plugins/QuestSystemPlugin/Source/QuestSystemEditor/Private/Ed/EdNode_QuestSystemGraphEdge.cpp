@@ -1,7 +1,7 @@
 // Quest System by JDNLY. All Rights Reserved
 
-#include "QuestSystemGraphAssetEditor/EdNode_QuestSystemGraphEdge.h"
-#include "QuestSystemGraphAssetEditor/EdGraphNode_QuestSystemGraphNode.h"
+#include "Ed/EdNode_QuestSystemGraphEdge.h"
+#include "Ed/EdGraphNode_QuestSystemGraphNode.h"
 #include "QuestSystemGraphEdge.h"
 
 #define LOCTEXT_NAMESPACE "EdNode_QuestSystemGraphEdge"

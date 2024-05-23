@@ -4,7 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Modules/ModuleManager.h"
-#include "QuestSystemGraphActions.h"
+#include "AssetActions/QuestSystemGraphActions.h"
 
 struct FQuestSystemGraphNodeFactory;
 struct FQuestSystemGraphNodePinFactory;

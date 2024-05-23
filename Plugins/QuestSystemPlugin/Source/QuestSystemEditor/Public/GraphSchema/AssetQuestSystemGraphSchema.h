@@ -3,8 +3,8 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "EdGraphNode_QuestSystemGraphNode.h"
-#include "EdNode_QuestSystemGraphEdge.h"
+#include "Ed/EdGraphNode_QuestSystemGraphNode.h"
+#include "Ed/EdNode_QuestSystemGraphEdge.h"
 #include "EdGraph/EdGraphSchema.h"
 #include "AssetQuestSystemGraphSchema.generated.h"
 

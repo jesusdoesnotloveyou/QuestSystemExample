@@ -4,10 +4,11 @@
 
 #include "CoreMinimal.h"
 #include "SGraphNode.h"
-#include "KismetNodes/SGraphNodeK2Base.h"
 
+// Forward declarations
 class UEdGraphNode_QuestSystemGraphNode;
 class UK2Node_QuestSystemNode;
+struct FSlateBrush;
 
 class QUESTSYSTEMEDITOR_API SGraphNode_QuestSystemGraphNode : public SGraphNode
 {
@@ -24,16 +25,14 @@ public:
     virtual bool IsNameReadOnly() const;
     // End of SGraphNode interface
 
-protected:
-    //FSlateColor GetEdgeColor() const;
+    virtual FSlateColor GetBorderBackgroundColor() const;
+    
+    virtual FSlateColor GetBackgroundColor() const;
+
+    virtual EVisibility GetGragOverMarkerVisibility();
+    
+    virtual const FSlateBrush* GetNameIcon() const;
+
+    
     
 };
-
-// class QUESTSYSTEMEDITOR_API SGraphNode_QuestSystemK2GraphNode : public SGraphNodeK2Base
-// {
-// public:
-//     SLATE_BEGIN_ARGS(SGraphNode_QuestSystemK2GraphNode) {}
-//     SLATE_END_ARGS()
-//
-//     void Construct(const FArguments& InArgs, UK2Node_QuestSystemNode* InNode);
-// };
