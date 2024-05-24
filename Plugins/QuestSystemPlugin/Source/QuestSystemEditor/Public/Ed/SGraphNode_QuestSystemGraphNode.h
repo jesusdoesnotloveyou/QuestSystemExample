@@ -14,6 +14,9 @@ class QUESTSYSTEMEDITOR_API SGraphNode_QuestSystemGraphNode : public SGraphNode
 {
 public:
 	SLATE_BEGIN_ARGS(SGraphNode_QuestSystemGraphNode) {}
+
+    //SLATE_ARGUMENT()
+    
 	SLATE_END_ARGS()
 
 	void Construct(const FArguments& InArgs, UEdGraphNode_QuestSystemGraphNode* InNode);
@@ -33,6 +36,8 @@ public:
     
     virtual const FSlateBrush* GetNameIcon() const;
 
+protected:
     
-    
+    TSharedPtr<SHorizontalBox> TopNodeBox;
+    TSharedPtr<SHorizontalBox> BottomNodeBox;
 };
