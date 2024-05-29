@@ -8,6 +8,9 @@
 #include "UObject/NoExportTypes.h"
 #include "QuestSystemGraph.generated.h"
 
+/**
+ *  Can be the object which contains all the logic for quest
+ */
 UCLASS(BlueprintType)
 class QUESTSYSTEMRUNTIME_API UQuestSystemGraph : public UObject
 {
@@ -23,7 +26,7 @@ public:
 	TSubclassOf<UQuestSystemGraphNode> NodeType;
 
 	UPROPERTY(EditDefaultsOnly, Category = "QuestSystemGraph")
-	TSubclassOf<UQuestSystemGraphEdge> EdgeType; 
+	TSubclassOf<UQuestSystemGraphEdge> EdgeType;
 
 	UPROPERTY(BlueprintReadOnly, Category = "QuestSystemGraph")
 	TArray<UQuestSystemGraphNode*> RootNodes;
