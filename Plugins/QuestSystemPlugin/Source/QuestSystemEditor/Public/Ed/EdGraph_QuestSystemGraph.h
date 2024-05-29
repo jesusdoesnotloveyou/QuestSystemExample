@@ -6,11 +6,13 @@
 #include "EdGraph/EdGraph.h"
 #include "EdGraph_QuestSystemGraph.generated.h"
 
+/** Forward declarations */
 class UQuestSystemGraph; 
 class UQuestSystemGraphNode; 
 class UQuestSystemGraphEdge;
 class UEdGraphNode_QuestSystemGraphNode;
 class UEdNode_QuestSystemGraphEdge;
+class FAssetEditor_QuestSystemEditor;
 
 UCLASS()
 class QUESTSYSTEMEDITOR_API UEdGraph_QuestSystemGraph : public UEdGraph
@@ -36,4 +38,8 @@ protected:
 	void Clear();
 
 	void SortNodes(UQuestSystemGraphNode* RootNode);
+
+private:
+    /** Weak pointer back to the Quest Editor that owns us */
+    TWeakPtr<FAssetEditor_QuestSystemEditor> QuestEditorPtr;
 };

@@ -51,7 +51,7 @@ void FConnectionDrawingPolicy_QuestSystemEditor::DrawPreviewConnector(const FGeo
     FConnectionParams Params;
     DetermineWiringStyle(Pin, nullptr, /*inout*/ Params);
 
-    if (Pin->Direction == EEdGraphPinDirection::EGPD_Output)
+    if (Pin->Direction == EGPD_Output)
     {
         DrawSplineWithArrow(FGeometryHelper::FindClosestPointOnGeom(PinGeometry, EndPoint), EndPoint, Params);
     }
@@ -85,7 +85,7 @@ void FConnectionDrawingPolicy_QuestSystemEditor::DetermineLinkGeometry(
     		{
     			int32* StartNodeIndex = NodeWidgetMap.Find(Start);
     			int32* EndNodeIndex = NodeWidgetMap.Find(End);
-    			if (StartNodeIndex != nullptr && EndNodeIndex != nullptr)
+    			if (StartNodeIndex && EndNodeIndex)
     			{
     				StartWidgetGeometry = &(ArrangedNodes[*StartNodeIndex]);
     				EndWidgetGeometry = &(ArrangedNodes[*EndNodeIndex]);

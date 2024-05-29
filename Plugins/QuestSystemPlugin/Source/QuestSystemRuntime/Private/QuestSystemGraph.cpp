@@ -8,10 +8,10 @@ DEFINE_LOG_CATEGORY_STATIC(LogQuestSystemGraph, All, All);
 #define LOCTEXT_NAMESPACE "QuestSystemGraph"
 
 UQuestSystemGraph::UQuestSystemGraph()
-{
+{   
 	NodeType = UQuestSystemGraphNode::StaticClass();
 	EdgeType = UQuestSystemGraphEdge::StaticClass();
-
+    
 	bEdgeEnabled = true;
 	
 #if WITH_EDITORONLY_DATA

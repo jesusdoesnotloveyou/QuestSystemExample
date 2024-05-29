@@ -7,15 +7,62 @@
 #include "SCommentBubble.h"
 #include "Ed/EdGraphNode_QuestSystemGraphNode.h"
 #include "EditorStyleSet.h"
+#include "GraphEditorDragDropAction.h"
+#include "SGraphPin.h"
+#include "Ed/EdNode_QuestSystemGraphEdge.h"
+
+class SQuestSystemGraphNodePin : public SGraphPin
+{
+public:
+    SLATE_BEGIN_ARGS(SQuestSystemGraphNodePin) {}
+    SLATE_END_ARGS()
+
+    void Construct(const FArguments& InArgs, UEdGraphPin* InPin)
+    {
+        this->SetCursor(EMouseCursor::Default);
+
+        bShowLabel = true;
+
+        GraphPinObj = InPin;
+        check(GraphPinObj);
+
+        const UEdGraphSchema* Schema = GraphPinObj->GetSchema();
+        check(Schema);
+
+        SBorder::Construct(SBorder::FArguments()
+            .BorderImage(this, &SQuestSystemGraphNodePin::GetPinBorder)
+            .BorderBackgroundColor(this, &SQuestSystemGraphNodePin::GetPinColor)
+            .OnMouseButtonDown(this, &SQuestSystemGraphNodePin::OnPinMouseDown)
+            .Cursor(this, &SQuestSystemGraphNodePin::GetPinCursor)
+            .Padding(FMargin(5.0f))
+        );
+    }
+
+protected:
+    virtual FSlateColor GetPinColor() const override
+    {
+        return FSlateColor(FLinearColor(FColor::White));
+    }
+
+    virtual TSharedRef<SWidget>	GetDefaultValueWidget() override
+    {
+        return SNew(STextBlock);
+    }
+
+    const FSlateBrush* GetPinBorder() const
+    {
+        return FEditorStyle::GetBrush(TEXT("Graph.StateNode.Body"));
+    }
+};
 
 void SGraphNode_QuestSystemGraphNode::Construct(const FArguments& InArgs, UEdGraphNode_QuestSystemGraphNode* InNode)
 {
-	GraphNode = InNode;
-
     SetCursor(EMouseCursor::CardinalCross);
+
+    GraphNode = InNode;
+    InNode->SEdNode = this;
     
 	UpdateGraphNode();
-    InNode->SEdNode = this;
 }
 
 void SGraphNode_QuestSystemGraphNode::UpdateGraphNode()
@@ -25,6 +72,8 @@ void SGraphNode_QuestSystemGraphNode::UpdateGraphNode()
 
     RightNodeBox.Reset();
     LeftNodeBox.Reset();
+    TopNodeBox.Reset();
+    BottomNodeBox.Reset();
 
     const FSlateBrush* NodeTypeIcon = GetNameIcon();
 
@@ -159,14 +208,29 @@ void SGraphNode_QuestSystemGraphNode::UpdateGraphNode()
 
 	ErrorReporting = ErrorText;
 	ErrorReporting->SetError(ErrorMsg);
-	CreatePinWidgets();
     
-    SGraphNode::UpdateGraphNode();
+    // CreateNodeWidget();
+    CreatePinWidgets();
+    
+    //SGraphNode::UpdateGraphNode();
 }
 
 void SGraphNode_QuestSystemGraphNode::CreatePinWidgets()
 {
-    SGraphNode::CreatePinWidgets();
+    UEdGraphNode_QuestSystemGraphNode* StateNode = CastChecked<UEdGraphNode_QuestSystemGraphNode>(GraphNode);
+
+    for (int32 PinIdx = 0; PinIdx < StateNode->Pins.Num(); PinIdx++)
+    {
+        UEdGraphPin* CurPin = StateNode->Pins[PinIdx];
+        if (!CurPin->bHidden)
+        {
+            TSharedPtr<SGraphPin> NewPin = SNew(SQuestSystemGraphNodePin, CurPin);
+
+            AddPin(NewPin.ToSharedRef());
+        }
+    }
+    
+    //SGraphNode::CreatePinWidgets();
 }
 
 void SGraphNode_QuestSystemGraphNode::AddPin(const TSharedRef<SGraphPin> &PinToAdd)
