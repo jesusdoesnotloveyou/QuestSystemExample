@@ -10,17 +10,14 @@
 DEFINE_LOG_CATEGORY_STATIC(LogEdGraph_QuestSystemGraph, All, All);
 
 UEdGraph_QuestSystemGraph::UEdGraph_QuestSystemGraph()
-{
-	
-}
+{}
 
 UEdGraph_QuestSystemGraph::~UEdGraph_QuestSystemGraph()
-{
-	
-}
+{}
 
 UQuestSystemGraph* UEdGraph_QuestSystemGraph::GetGenericGraph() const
 {
+    UE_LOG(LogEdGraph_QuestSystemGraph, Warning, TEXT("Outer of EdGraph name: %s"), *GetOuter()->GetName());
 	return CastChecked<UQuestSystemGraph>(GetOuter());
 }
 
@@ -197,6 +194,6 @@ void UEdGraph_QuestSystemGraph::SortNodes(UQuestSystemGraphNode* RootNode)
 
 void UEdGraph_QuestSystemGraph::PostEditUndo()
 {
-    Super::PostEditUndo();
     NotifyGraphChanged();
+    Super::PostEditUndo();
 }
