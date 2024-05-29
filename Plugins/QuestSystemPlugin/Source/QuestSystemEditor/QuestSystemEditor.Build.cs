@@ -34,11 +34,16 @@ public class QuestSystemEditor : ModuleRules
 				"QuestSystemRuntime",
 				"Slate",
 				"SlateCore",
+				// Seems like FEditorStyle from EditorStyle gonna be deprecated in UE5, gotta use FAppStyle from SlateCore module
 				"EditorStyle",
 				"GraphEditor",
 				"ToolMenus",
 				"ApplicationCore", 
-				"AITestSuite"
+				"AssetTools",
+				// Probably can be removed
+				"AITestSuite",
+				// For WorkflowTabFactory
+				"Kismet",
 			}
 		);
 		
