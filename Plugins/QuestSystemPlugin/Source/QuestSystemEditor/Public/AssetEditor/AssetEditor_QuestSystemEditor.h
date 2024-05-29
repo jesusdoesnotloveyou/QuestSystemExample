@@ -13,10 +13,31 @@ class FAssetQuestEditorToolbar;
 class UQuestSystemGraph;
 class UGraphEditorSettings_QuestSystemEditor;
 
-// For FWorkflowCentricApplication inherited editor (example of this type editor - behavior tree) 
-struct FTestDetailsSummoner : public FWorkflowTabFactory
+struct FQuestSystemEditorTabs
 {
-    FTestDetailsSummoner();
+    /**	The tab ids for all the tabs used */
+    static const FName ViewportTabId;
+
+    /**	The tab ids for all the tabs used */
+    static const FName PropertiesTabId;
+
+    /**	The tab ids for all the tabs used */
+    static const FName SettingsTabId;
+
+    /** The tab ids for level preview */
+    static const FName PreviewTabId;
+};
+
+// For FWorkflowCentricApplication inherited editor (example of this type editor - behavior tree) 
+struct FQuestSystemGraphDetailsSummoner : public FWorkflowTabFactory
+{
+public:
+    FQuestSystemGraphDetailsSummoner(TSharedPtr<class FAssetEditor_QuestSystemEditor> InQuestEditorPtr);
+    virtual TSharedRef<SWidget> CreateTabBody(const FWorkflowTabSpawnInfo& Info) const override;
+    virtual FText GetTabToolTipText(const FWorkflowTabSpawnInfo& Info) const override;
+
+protected:
+    TWeakPtr<class FAssetEditor_QuestSystemEditor> QuestEditorPtr;
 };
 
 class QUESTSYSTEMEDITOR_API FAssetEditor_QuestSystemEditor
@@ -32,7 +53,7 @@ public:
     //~
 
     void InitQuestSystemEditor(const EToolkitMode::Type Mode, const TSharedPtr<IToolkitHost> &InitToolkitHost,
-                               UQuestSystemGraph *GraphToEdit);
+                               UObject *ObjectToEdit);
     
     //~ Begin of FGCObject Interface
     virtual void AddReferencedObjects(class FReferenceCollector &Collector) override;
@@ -75,19 +96,7 @@ private:
 
     bool IsPropertyEditable() const;
 
-private:
-    /**	The tab ids for all the tabs used */
-    static const FName ViewportTabId;
-
-    /**	The tab ids for all the tabs used */
-    static const FName PropertiesTabId;
-
-    /**	The tab ids for all the tabs used */
-    static const FName SettingsTabId;
-
-    /** The tab ids for level preview */
-    static const FName PreviewTabId;
-    
+public:
     /** App Identifier. Technically, all simple editors are the same app, despite editing a variety of assets. */
     static const FName QuestSystemEditorAppIdentifier;
 

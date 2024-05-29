@@ -2,7 +2,7 @@
 
 #include "AssetEditor/AssetEditor_QuestSystemEditor.h"
 
-#include "AITestsCommon.h"
+//#include "AITestsCommon.h"
 #include "QuestSystemRuntime/Public/QuestSystemGraph.h"
 #include "GraphSchema/AssetQuestSystemGraphSchema.h"
 #include "Ed/EdGraph_QuestSystemGraph.h"
@@ -12,6 +12,7 @@
 #include "GraphEditorActions.h"
 #include "Settings//GraphEditorSettings_QuestSystemEditor.h"
 #include "ISettingsViewer.h"
+#include "WorkflowOrientedApp/WorkflowTabFactory.h"
 
 #include "HAL/PlatformApplicationMisc.h"
 #include "Kismet2/BlueprintEditorUtils.h"
@@ -24,12 +25,30 @@ DEFINE_LOG_CATEGORY_STATIC(LogAssetEditor_QuestSystemGraph, All, All);
 
 #define LOCTEXT_NAMESPACE "QuestSystemEditor"
 
+FQuestSystemGraphDetailsSummoner::FQuestSystemGraphDetailsSummoner(TSharedPtr<class FAssetEditor_QuestSystemEditor> InQuestEditorPtr)
+    : FWorkflowTabFactory(FAssetEditor_QuestSystemEditor::QuestSystemEditorAppIdentifier, InQuestEditorPtr)
+    , QuestEditorPtr(InQuestEditorPtr)
+{
+}
+
+TSharedRef<SWidget> FQuestSystemGraphDetailsSummoner::CreateTabBody(const FWorkflowTabSpawnInfo& Info) const
+{
+    check(QuestEditorPtr.Pin().IsValid());
+    //return QuestEditorPtr.Pin()->SpawnTab_Details();
+    return SNullWidget::NullWidget;
+}
+
+FText FQuestSystemGraphDetailsSummoner::GetTabToolTipText(const FWorkflowTabSpawnInfo& Info) const
+{
+    return LOCTEXT("QuestEditorDetailsTabTooltip", "The quest editor details tab allows editing of the properties of quest editor nodes");
+}
+
 const FName FAssetEditor_QuestSystemEditor::QuestSystemEditorAppIdentifier( TEXT("QuestSystemEditorApp") );
 
-const FName FAssetEditor_QuestSystemEditor::PropertiesTabId( TEXT ("QuestSystemEditor_Properties" ) );
-const FName FAssetEditor_QuestSystemEditor::ViewportTabId( TEXT ("QuestSystemEditor_Viewport" ) );
-const FName FAssetEditor_QuestSystemEditor::SettingsTabId( TEXT ("QuestSystemEditor_Settings" ) );
-const FName FAssetEditor_QuestSystemEditor::PreviewTabId( TEXT ("QuestSystemEditor_Preview" ) );
+const FName FQuestSystemEditorTabs::PropertiesTabId( TEXT ("QuestSystemEditor_Properties" ) );
+const FName FQuestSystemEditorTabs::ViewportTabId( TEXT ("QuestSystemEditor_Viewport" ) );
+const FName FQuestSystemEditorTabs::SettingsTabId( TEXT ("QuestSystemEditor_Settings" ) );
+const FName FQuestSystemEditorTabs::PreviewTabId( TEXT ("QuestSystemEditor_Preview" ) );
 
 FAssetEditor_QuestSystemEditor::FAssetEditor_QuestSystemEditor()
 {
@@ -79,9 +98,9 @@ void FAssetEditor_QuestSystemEditor::ExtendToolbar()
     
 }
 
-void FAssetEditor_QuestSystemEditor::InitQuestSystemEditor(const EToolkitMode::Type Mode, const TSharedPtr<IToolkitHost>& InitToolkitHost, UQuestSystemGraph* GraphToEdit)
+void FAssetEditor_QuestSystemEditor::InitQuestSystemEditor(const EToolkitMode::Type Mode, const TSharedPtr<IToolkitHost>& InitToolkitHost, UObject* ObjectToEdit)
 {
-	EditingGraph = GraphToEdit;
+	EditingGraph = CastChecked<UQuestSystemGraph>(ObjectToEdit);
     EditorSettings = NewObject<UGraphEditorSettings_QuestSystemEditor>(UGraphEditorSettings_QuestSystemEditor::StaticClass());
 	CreateEdGraph();
 
@@ -118,7 +137,7 @@ void FAssetEditor_QuestSystemEditor::InitQuestSystemEditor(const EToolkitMode::T
 					FTabManager::NewStack()
 					->SetSizeCoefficient(0.8f)
 					->SetHideTabWell(false)
-					->AddTab(ViewportTabId, ETabState::OpenedTab)
+					->AddTab(FQuestSystemEditorTabs::ViewportTabId, ETabState::OpenedTab)
 				)
 				->Split
 				(
@@ -130,7 +149,7 @@ void FAssetEditor_QuestSystemEditor::InitQuestSystemEditor(const EToolkitMode::T
                         FTabManager::NewStack()
                         ->SetSizeCoefficient(0.5f)
                         ->SetHideTabWell(false)
-                        ->AddTab(PropertiesTabId, ETabState::OpenedTab)
+                        ->AddTab(FQuestSystemEditorTabs::PropertiesTabId, ETabState::OpenedTab)
                     )
                     // ->Split
                     // (
@@ -142,19 +161,16 @@ void FAssetEditor_QuestSystemEditor::InitQuestSystemEditor(const EToolkitMode::T
                     (
                         FTabManager::NewStack()
                         ->SetSizeCoefficient(0.5f)
-                        ->AddTab(PreviewTabId, ETabState::OpenedTab)
+                        ->AddTab(FQuestSystemEditorTabs::PreviewTabId, ETabState::OpenedTab)
                     )
                 )
 			)
 		);
-
+    
 	constexpr bool bCreateDefaultStandaloneMenu = true;
 	constexpr bool bCreateDefaultToolbar = true;
     
-	FAssetEditorToolkit::InitAssetEditor(Mode, InitToolkitHost, QuestSystemEditorAppIdentifier,
-                                         StandaloneDefaultLayout,
-	                                     bCreateDefaultStandaloneMenu,
-	                                     bCreateDefaultToolbar, EditingGraph);
+	FAssetEditorToolkit::InitAssetEditor(Mode, InitToolkitHost, QuestSystemEditorAppIdentifier, StandaloneDefaultLayout, bCreateDefaultStandaloneMenu, bCreateDefaultToolbar, ObjectToEdit);
     ExtendMenu();
     ExtendToolbar();
     RegenerateMenusAndToolbars();
@@ -167,12 +183,12 @@ void FAssetEditor_QuestSystemEditor::RegisterTabSpawners(const TSharedRef<FTabMa
     
 	FAssetEditorToolkit::RegisterTabSpawners(InTabManager);
     
-	InTabManager->RegisterTabSpawner(ViewportTabId, FOnSpawnTab::CreateSP(this, &FAssetEditor_QuestSystemEditor::SpawnTab_Viewport))
+	InTabManager->RegisterTabSpawner(FQuestSystemEditorTabs::ViewportTabId, FOnSpawnTab::CreateSP(this, &FAssetEditor_QuestSystemEditor::SpawnTab_Viewport))
 		.SetDisplayName( LOCTEXT("ViewportTab", "Viewport") )
 		.SetGroup(WorkspaceMenuCategoryRef)
 		.SetIcon(FSlateIcon(FEditorStyle::GetStyleSetName(), "GraphEditor.EventGraph_16x"));
 	
-	InTabManager->RegisterTabSpawner(PropertiesTabId, FOnSpawnTab::CreateSP(this, &FAssetEditor_QuestSystemEditor::SpawnTab_Details))
+	InTabManager->RegisterTabSpawner(FQuestSystemEditorTabs::PropertiesTabId, FOnSpawnTab::CreateSP(this, &FAssetEditor_QuestSystemEditor::SpawnTab_Details))
 		.SetDisplayName( LOCTEXT("PropertiesTab", "Details") )
 		.SetGroup(WorkspaceMenuCategoryRef)
 		.SetIcon(FSlateIcon(FEditorStyle::GetStyleSetName(), "LevelEditor.Tabs.Details"));
@@ -182,7 +198,7 @@ void FAssetEditor_QuestSystemEditor::RegisterTabSpawners(const TSharedRef<FTabMa
         .SetGroup(WorkspaceMenuCategoryRef)
         .SetIcon(FSlateIcon(FEditorStyle::GetStyleSetName(), "LevelEditor.Tabs.Viewports"));
     */
-    InTabManager->RegisterTabSpawner(SettingsTabId, FOnSpawnTab::CreateSP(this, &FAssetEditor_QuestSystemEditor::SpawnTab_EditorSettings))
+    InTabManager->RegisterTabSpawner(FQuestSystemEditorTabs::SettingsTabId, FOnSpawnTab::CreateSP(this, &FAssetEditor_QuestSystemEditor::SpawnTab_EditorSettings))
         .SetDisplayName( LOCTEXT("SettingsTab", "Editor Settings") )
         .SetGroup(WorkspaceMenuCategoryRef)
         .SetIcon(FSlateIcon(FEditorStyle::GetStyleSetName(), "GraphEditor.EventGraph_16x"));
@@ -192,10 +208,10 @@ void FAssetEditor_QuestSystemEditor::UnregisterTabSpawners(const TSharedRef<FTab
 {
 	FAssetEditorToolkit::UnregisterTabSpawners(InTabManager);
 	
-	InTabManager->UnregisterTabSpawner(ViewportTabId);
-	InTabManager->UnregisterTabSpawner(PropertiesTabId);
+	InTabManager->UnregisterTabSpawner(FQuestSystemEditorTabs::ViewportTabId);
+	InTabManager->UnregisterTabSpawner(FQuestSystemEditorTabs::PropertiesTabId);
     //InTabManager->UnregisterTabSpawner(PreviewTabId);
-	InTabManager->UnregisterTabSpawner(SettingsTabId);
+	InTabManager->UnregisterTabSpawner(FQuestSystemEditorTabs::SettingsTabId);
 }
 
 bool FAssetEditor_QuestSystemEditor::IsAssetEditor() const
@@ -299,7 +315,7 @@ void FAssetEditor_QuestSystemEditor::CreateEdGraph()
 
 TSharedRef<SDockTab> FAssetEditor_QuestSystemEditor::SpawnTab_Details(const FSpawnTabArgs& Args)
 {
-	check(Args.GetTabId() == PropertiesTabId);
+	check(Args.GetTabId() == FQuestSystemEditorTabs::PropertiesTabId);
     UE_LOG(LogAssetEditor_QuestSystemGraph, Warning, TEXT("Details Tab is spawning"));
     
     return SNew(SDockTab)
@@ -311,7 +327,7 @@ TSharedRef<SDockTab> FAssetEditor_QuestSystemEditor::SpawnTab_Details(const FSpa
 
 TSharedRef<SDockTab> FAssetEditor_QuestSystemEditor::SpawnTab_Preview(const FSpawnTabArgs &Args)
 {
-    check(Args.GetTabId() == PreviewTabId);
+    check(Args.GetTabId() == FQuestSystemEditorTabs::PreviewTabId);
     return SNew(SDockTab)
         .TabRole(PanelTab)
         [
@@ -321,7 +337,7 @@ TSharedRef<SDockTab> FAssetEditor_QuestSystemEditor::SpawnTab_Preview(const FSpa
 
 TSharedRef<SDockTab> FAssetEditor_QuestSystemEditor::SpawnTab_EditorSettings(const FSpawnTabArgs& Args)
 {
-    check(Args.GetTabId() == SettingsTabId);
+    check(Args.GetTabId() == FQuestSystemEditorTabs::SettingsTabId);
     return SNew(SDockTab)
         .TabRole(PanelTab)
         [
@@ -331,7 +347,7 @@ TSharedRef<SDockTab> FAssetEditor_QuestSystemEditor::SpawnTab_EditorSettings(con
 
 TSharedRef<SDockTab> FAssetEditor_QuestSystemEditor::SpawnTab_Viewport(const FSpawnTabArgs& Args)
 {
-	check(Args.GetTabId() == ViewportTabId);
+	check(Args.GetTabId() == FQuestSystemEditorTabs::ViewportTabId);
 	return SNew(SDockTab)
 		.TabColorScale(GetTabColorScale())
 		.TabRole(PanelTab)
