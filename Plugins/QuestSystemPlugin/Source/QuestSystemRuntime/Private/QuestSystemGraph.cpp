@@ -27,6 +27,16 @@ UQuestSystemGraph::~UQuestSystemGraph()
 	
 }
 
+TArray<UQuestSystemGraphNode*> UQuestSystemGraph::GetRootNodes() const
+{
+    return RootNodes;
+}
+    
+TArray<UQuestSystemGraphNode*> UQuestSystemGraph::GetAllNodes() const
+{
+    return AllNodes;
+}
+
 void UQuestSystemGraph::Print(bool ToConsole, bool ToScreen)
 {
 	int Level = 0;
@@ -111,13 +121,13 @@ void UQuestSystemGraph::GetNodesByLevel(int Level, TArray<UQuestSystemGraphNode*
 
 void UQuestSystemGraph::ClearGraph()
 {
-	for (const auto& QuestSystemGraphNode : AllNodes)
+	for (const auto& Node : AllNodes)
 	{
-		if (QuestSystemGraphNode)
+		if (Node)
 		{
-			QuestSystemGraphNode->ParentNodes.Empty();
-			QuestSystemGraphNode->ChildrenNodes.Empty();
-			QuestSystemGraphNode->Edges.Empty();
+			Node->ParentNodes.Empty();
+			Node->ChildrenNodes.Empty();
+			Node->Edges.Empty();
 		}
 	}
 	AllNodes.Empty();

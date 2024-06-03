@@ -12,6 +12,7 @@
 #include "GraphEditorActions.h"
 #include "Settings//GraphEditorSettings_QuestSystemEditor.h"
 #include "ISettingsViewer.h"
+#include "TestQuestActor.h"
 #include "WorkflowOrientedApp/WorkflowTabFactory.h"
 
 #include "HAL/PlatformApplicationMisc.h"
@@ -52,7 +53,7 @@ const FName FQuestSystemEditorTabs::PreviewTabId( TEXT ("QuestSystemEditor_Previ
 
 FAssetEditor_QuestSystemEditor::FAssetEditor_QuestSystemEditor()
 {
-	EditingGraph = nullptr;
+	EditingObject = nullptr;
     EditorSettings = nullptr;
 
     const UWorld* World = GEditor->GetEditorWorldContext().World();
@@ -68,7 +69,7 @@ FAssetEditor_QuestSystemEditor::FAssetEditor_QuestSystemEditor()
 
 FAssetEditor_QuestSystemEditor::~FAssetEditor_QuestSystemEditor()
 {
-	EditingGraph = nullptr;
+	EditingObject = nullptr;
     EditorSettings = nullptr;
 }
 
@@ -77,8 +78,8 @@ FAssetEditor_QuestSystemEditor::~FAssetEditor_QuestSystemEditor()
  */
 void FAssetEditor_QuestSystemEditor::CreateNewNode()
 {
-    if (!EditingGraph || !EditingGraph->EdGraph) return;
-    //EditingGraph->EdGraph->;
+    if (!EditingObject || !EditingObject->EdGraph) return;
+    //EditingObject->EdGraph->;
 }
 
 bool FAssetEditor_QuestSystemEditor::CanCreateNewNode() const
@@ -100,7 +101,8 @@ void FAssetEditor_QuestSystemEditor::ExtendToolbar()
 
 void FAssetEditor_QuestSystemEditor::InitQuestSystemEditor(const EToolkitMode::Type Mode, const TSharedPtr<IToolkitHost>& InitToolkitHost, UObject* ObjectToEdit)
 {
-	EditingGraph = CastChecked<UQuestSystemGraph>(ObjectToEdit);
+	EditingObject = CastChecked<UQuestSystemGraph>(ObjectToEdit);
+	//EditingObject = CastChecked<ATestQuestActor>(ObjectToEdit);
     EditorSettings = NewObject<UGraphEditorSettings_QuestSystemEditor>(UGraphEditorSettings_QuestSystemEditor::StaticClass());
 	CreateEdGraph();
 
@@ -222,8 +224,8 @@ bool FAssetEditor_QuestSystemEditor::IsAssetEditor() const
 
 void FAssetEditor_QuestSystemEditor::AddReferencedObjects(class FReferenceCollector& Collector)
 {
-    Collector.AddReferencedObject(EditingGraph);
-    Collector.AddReferencedObject(EditingGraph->EdGraph);
+    Collector.AddReferencedObject(EditingObject);
+    Collector.AddReferencedObject(EditingObject->EdGraph);
 }
 
 void FAssetEditor_QuestSystemEditor::CreateInternalWidgets()
@@ -241,7 +243,7 @@ void FAssetEditor_QuestSystemEditor::CreateInternalWidgets()
 
     FPropertyEditorModule& PropertyEditorModule = FModuleManager::GetModuleChecked<FPropertyEditorModule>("PropertyEditor");
     DetailsView = PropertyEditorModule.CreateDetailView(DetailsViewArgs);
-    DetailsView->SetObject(EditingGraph);
+    DetailsView->SetObject(EditingObject);
     // DetailsView->SetIsPropertyEditingEnabledDelegate(FIsPropertyEditingEnabled::CreateSP(this, &FAssetEditor_QuestSystemEditorEditor::IsPropertyEditable));
     DetailsView->OnFinishedChangingProperties().AddSP(this, &FAssetEditor_QuestSystemEditor::OnFinishedChangingProperties);
         
@@ -260,7 +262,7 @@ TSharedRef<SDockTab> FAssetEditor_QuestSystemEditor::CreatePreviewWidget()
 
 TSharedRef<SGraphEditor> FAssetEditor_QuestSystemEditor::CreateGraphEditorWidget()
 {
-	check(EditingGraph->EdGraph); // What's this for?
+	check(EditingObject->EdGraph); // What's this for?
 	FGraphAppearanceInfo GraphAppearanceInfo;
 	// Allow to use LOCTEXT below
 	GraphAppearanceInfo.CornerText = FText::FromString("Quest System Editor");
@@ -291,10 +293,10 @@ TSharedRef<SGraphEditor> FAssetEditor_QuestSystemEditor::CreateGraphEditorWidget
     
 	return SNew(SGraphEditor)
 		.AdditionalCommands(GraphEditorCommands)
-		.IsEditable(EditingGraph->EdGraph->bEditable)
+		.IsEditable(EditingObject->EdGraph->bEditable)
 		.Appearance(GraphAppearanceInfo)
         .TitleBar(TitleBarWidget)
-		.GraphToEdit(EditingGraph->EdGraph)
+		.GraphToEdit(EditingObject->EdGraph)
 		.GraphEvents(InEvents)
 		.AutoExpandActionMenu(true)
 		.ShowGraphStateOverlay(true);
@@ -302,14 +304,14 @@ TSharedRef<SGraphEditor> FAssetEditor_QuestSystemEditor::CreateGraphEditorWidget
 
 void FAssetEditor_QuestSystemEditor::CreateEdGraph()
 {
-	if (!EditingGraph->EdGraph)
+	if (!EditingObject->EdGraph)
 	{
-		EditingGraph->EdGraph = CastChecked<UEdGraph_QuestSystemGraph>(FBlueprintEditorUtils::CreateNewGraph(
-		    EditingGraph,
+		EditingObject->EdGraph = CastChecked<UEdGraph_QuestSystemGraph>(FBlueprintEditorUtils::CreateNewGraph(
+		    EditingObject,
 		    NAME_None,
 		    UEdGraph_QuestSystemGraph::StaticClass(),
 		    UAssetQuestSystemGraphSchema::StaticClass()));
-		EditingGraph->EdGraph->bAllowDeletion = false;
+		EditingObject->EdGraph->bAllowDeletion = false;
 	}
 }
 
@@ -361,17 +363,17 @@ TSharedRef<SDockTab> FAssetEditor_QuestSystemEditor::SpawnTab_Viewport(const FSp
 // Need a declaration in .h
 // void FAssetEditor_QuestSystemEditor::SetNewEditingObject(UQuestSystemGraph* NewEditingGraph)
 // {
-//     if (!NewEditingGraph || NewEditingGraph == EditingGraph) return;
-//     RemoveEditingObject(EditingGraph);
-//     EditingGraph = NewEditingGraph;
+//     if (!NewEditingGraph || NewEditingGraph == EditingObject) return;
+//     RemoveEditingObject(EditingObject);
+//     EditingObject = NewEditingGraph;
 //     AddEditingObject(NewEditingGraph);
 // }
 
 void FAssetEditor_QuestSystemEditor::RebuildQuestSystemGraph()
 {
     // gotta create Log message if Editing graph is nullptr
-    if (!EditingGraph) return;
-    UEdGraph_QuestSystemGraph* EdGraph = Cast<UEdGraph_QuestSystemGraph>(EditingGraph->EdGraph);
+    if (!EditingObject) return;
+    UEdGraph_QuestSystemGraph* EdGraph = Cast<UEdGraph_QuestSystemGraph>(EditingObject->EdGraph);
     check(EdGraph);
     EdGraph->RebuildGraph();
 }
@@ -745,7 +747,7 @@ void FAssetEditor_QuestSystemEditor::OnSelectedNodesChanged(const TSet<UObject*>
     }
     else
     {
-        DetailsView->SetObject(EditingGraph);
+        DetailsView->SetObject(EditingObject);
     }
 }
 
@@ -759,8 +761,8 @@ void FAssetEditor_QuestSystemEditor::OnNodeDoubleClicked(UEdGraphNode* Node)
 
 void FAssetEditor_QuestSystemEditor::OnFinishedChangingProperties(const FPropertyChangedEvent& PropertyChangedEvent)
 {
-    if (!EditingGraph) return;
-    EditingGraph->EdGraph->GetSchema()->ForceVisualizationCacheClear();
+    if (!EditingObject) return;
+    EditingObject->EdGraph->GetSchema()->ForceVisualizationCacheClear();
 
     RebuildQuestSystemGraph();
 }

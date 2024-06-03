@@ -1,6 +1,7 @@
 ﻿// Copyright Epic Games, Inc. All Rights Reserved.
 
 #include "QuestSystemEditorModule.h"
+#include "AssetActions/QuestSystemGraphActions.h"
 #include "QuestSystemGraphNodeFactory.h"
 
 #define LOCTEXT_NAMESPACE "FQuestSystemEditorModule"
@@ -9,7 +10,6 @@ void FQuestSystemEditorModule::StartupModule()
 {
 	// This code will execute after your module is loaded into memory; the exact timing is specified in the .uplugin file per-module
     IAssetTools& AssetToolsModule = FModuleManager::LoadModuleChecked<FAssetToolsModule>("AssetTools").Get();
-
     // Register new Category
     const EAssetTypeCategories::Type QuestSystemEditorAssetCategoryBit = AssetToolsModule.RegisterAdvancedAssetCategory(FName("Quest System Editor"),
         LOCTEXT("FQuestSystemEditorModule", "Quest System Editor"));
@@ -36,14 +36,15 @@ void FQuestSystemEditorModule::ShutdownModule()
 	// we call this function before unloading the module.
 
     if (!FModuleManager::Get().IsModuleLoaded("AssetTools")) return;
-		FAssetToolsModule::GetModule().Get().UnregisterAssetTypeActions(QuestSystemEditorAssetAction.ToSharedRef());
-
+    FAssetToolsModule::GetModule().Get().UnregisterAssetTypeActions(QuestSystemEditorAssetAction.ToSharedRef());
+    
     // Unregister the nodes factory
     if (QuestSystemEditorNodeFactory.IsValid())
     {
         FEdGraphUtilities::UnregisterVisualNodeFactory(QuestSystemEditorNodeFactory);
         QuestSystemEditorNodeFactory.Reset();
     }
+    
     // Unregister the pins factory
     if (QuestSystemEditorNodePinFactory.IsValid())
     {

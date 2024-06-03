@@ -2,6 +2,8 @@
 
 
 #include "AssetFactories/QuestSystemGraphFactory.h"
+#include "QuestSystemGraph.h"
+#include "TestQuestActor.h"
 
 UQuestSystemGraphFactory::UQuestSystemGraphFactory()
 {

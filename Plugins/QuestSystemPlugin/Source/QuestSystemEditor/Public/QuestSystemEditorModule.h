@@ -4,8 +4,8 @@
 
 #include "CoreMinimal.h"
 #include "Modules/ModuleManager.h"
-#include "AssetActions/QuestSystemGraphActions.h"
 
+class FQuestSystemGraphActions;
 struct FQuestSystemGraphNodeFactory;
 struct FQuestSystemGraphNodePinFactory;
 struct FQuestSystemGraphPinConnectionFactory;
@@ -14,10 +14,8 @@ class FQuestSystemEditorModule : public IModuleInterface
 {
 public:
 	/** IModuleInterface implementation */
-    
     /* Called when the module is loaded */
 	virtual void StartupModule() override;
-
     /* Called when the module is unloaded */
 	virtual void ShutdownModule() override;
 

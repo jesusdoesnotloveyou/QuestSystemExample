@@ -11,6 +11,7 @@
 // Forward declarations
 class FAssetQuestEditorToolbar;
 class UQuestSystemGraph;
+class ATestQuestActor;
 class UGraphEditorSettings_QuestSystemEditor;
 
 struct FQuestSystemEditorTabs
@@ -146,7 +147,8 @@ protected:
     UGraphEditorSettings_QuestSystemEditor* EditorSettings;
 
     // The object we're currently editing
-    UQuestSystemGraph* EditingGraph;
+    UQuestSystemGraph* EditingObject;
+    //ATestQuestActor* EditingObject;
     
     //Toolbar
     TSharedPtr<class FAssetQuestEditorToolbar> ToolbarBuilder;

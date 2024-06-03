@@ -3,9 +3,10 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "QuestSystemGraph.h"
 #include "Factories/Factory.h"
 #include "QuestSystemGraphFactory.generated.h"
+
+class UQuestSystemGraph;
 
 UCLASS()
 class QUESTSYSTEMEDITOR_API UQuestSystemGraphFactory : public UFactory

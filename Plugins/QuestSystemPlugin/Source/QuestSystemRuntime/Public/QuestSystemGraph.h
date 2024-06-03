@@ -37,6 +37,14 @@ public:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "QuestSystemGraph")
 	bool bEdgeEnabled;
 
+#pragma region Functions
+    
+    UFUNCTION(BlueprintCallable, Category = "QuestSystemGraph")
+    TArray<UQuestSystemGraphNode*> GetRootNodes() const;
+    
+    UFUNCTION(BlueprintCallable, Category = "QuestSystemGraph")
+    TArray<UQuestSystemGraphNode*> GetAllNodes() const;
+    
 	UFUNCTION(BlueprintCallable, Category = "QuestSystemGraph")
 	void Print(bool ToConsole = true, bool ToScreen = true);
 
@@ -48,6 +56,7 @@ public:
 
 	void ClearGraph();
 
+#pragma endregion 
 	
 #if WITH_EDITORONLY_DATA
 	UPROPERTY()
