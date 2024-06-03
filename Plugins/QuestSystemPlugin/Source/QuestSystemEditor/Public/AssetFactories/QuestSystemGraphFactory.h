@@ -15,9 +15,12 @@ class QUESTSYSTEMEDITOR_API UQuestSystemGraphFactory : public UFactory
 public:
 	UQuestSystemGraphFactory();
 
-private:
     // UFactory interface
 	virtual UObject* FactoryCreateNew(UClass* Class, UObject* InParent, FName Name, EObjectFlags Flags, UObject* Context, FFeedbackContext* Warn) override;
     virtual bool CanCreateNew() const override;
+    virtual bool ConfigureProperties() override;
     // End of UFactory interface
+
+private:
+    TSubclassOf<UQuestSystemGraph> ParentClass;
 };
