@@ -5,6 +5,8 @@
 #include "CoreMinimal.h"
 #include "Modules/ModuleManager.h"
 
+class IAssetTypeActions;
+class IAssetTools;
 class FQuestSystemGraphActions;
 struct FQuestSystemGraphNodeFactory;
 struct FQuestSystemGraphNodePinFactory;
@@ -20,7 +22,10 @@ public:
 	virtual void ShutdownModule() override;
 
 private:
- 	TSharedPtr<class FQuestSystemGraphActions> QuestSystemEditorAssetAction;
+    void RegisterAssetTypeAction(IAssetTools& AssetTools, TSharedRef<IAssetTypeActions> Action);
+    
+private:
+ 	TArray<TSharedPtr<IAssetTypeActions>> CreatedQuestSystemEditorAssetTypeActions;
  	
 	TSharedPtr<FQuestSystemGraphNodeFactory> QuestSystemEditorNodeFactory;
 	TSharedPtr<FQuestSystemGraphNodePinFactory> QuestSystemEditorNodePinFactory;
