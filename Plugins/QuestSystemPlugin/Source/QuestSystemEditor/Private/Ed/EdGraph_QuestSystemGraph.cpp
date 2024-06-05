@@ -3,9 +3,11 @@
 #include "Ed/EdGraph_QuestSystemGraph.h"
 #include "Ed/EdGraphNode_QuestSystemGraphNode.h"
 #include "Ed/EdNode_QuestSystemGraphEdge.h"
-#include "QuestSystemGraph.h"
-#include "QuestSystemGraphNode.h"
 #include "Animation/NodeMappingContainer.h"
+
+#include "Graph/QuestSystemGraph.h"
+#include "Nodes/QuestSystemGraphNode.h"
+#include "Edges/QuestSystemGraphEdge.h"
 
 DEFINE_LOG_CATEGORY_STATIC(LogEdGraph_QuestSystemGraph, All, All);
 

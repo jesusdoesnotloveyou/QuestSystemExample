@@ -2,12 +2,12 @@
 
 
 #include "AssetFactories/QuestSystemGraphFactory.h"
-
 #include "ClassViewerFilter.h"
 #include "ClassViewerModule.h"
-#include "QuestSystemGraph.h"
 #include "Kismet2/KismetEditorUtilities.h"
 #include "Kismet2/SClassPickerDialog.h"
+
+#include "Graph/QuestSystemGraph.h"
 #include "TestQuestActor.h"
 
 #define LOCTEXT_NAMESPACE "QuestSystemGraphFactory"

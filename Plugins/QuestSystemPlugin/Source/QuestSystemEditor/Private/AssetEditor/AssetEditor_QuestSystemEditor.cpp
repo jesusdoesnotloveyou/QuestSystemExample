@@ -1,26 +1,23 @@
 // Quest System by JDNLY. All Rights Reserved
 
 #include "AssetEditor/AssetEditor_QuestSystemEditor.h"
-
-//#include "AITestsCommon.h"
-#include "QuestSystemRuntime/Public/QuestSystemGraph.h"
-#include "GraphSchema/AssetQuestSystemGraphSchema.h"
-#include "Ed/EdGraph_QuestSystemGraph.h"
 #include "AssetEditor/AssetQuestEditorToolbar.h"
+#include "GraphSchema/AssetQuestSystemGraphSchema.h"
 #include "EdGraphUtilities.h"
 #include "Framework/Commands/GenericCommands.h"
 #include "GraphEditorActions.h"
 #include "Settings//GraphEditorSettings_QuestSystemEditor.h"
 #include "ISettingsViewer.h"
-#include "TestQuestActor.h"
 #include "WorkflowOrientedApp/WorkflowTabFactory.h"
-
 #include "HAL/PlatformApplicationMisc.h"
 #include "Kismet2/BlueprintEditorUtils.h"
 #include "EditorStyle/Public/EditorStyleSet.h"
-
+#include "Ed/EdGraph_QuestSystemGraph.h"
 #include "Ed/EdGraphNode_QuestSystemGraphNode.h"
 #include "Ed/EdNode_QuestSystemGraphEdge.h"
+
+#include "QuestSystemRuntime/Public/Graph/QuestSystemGraph.h"
+#include "TestQuestActor.h"
 
 DEFINE_LOG_CATEGORY_STATIC(LogAssetEditor_QuestSystemGraph, All, All);
 
@@ -65,6 +62,11 @@ FAssetEditor_QuestSystemEditor::FAssetEditor_QuestSystemEditor()
     {
         UE_LOG(LogAssetEditor_QuestSystemGraph, Error, TEXT("LevelName: %s"), *Level->GetName());
     }
+
+    if (GEditor && GEditor->PlayWorld)
+    {
+        UE_LOG(LogAssetEditor_QuestSystemGraph, Warning, TEXT("PLAY WORLD is active"));
+    }
 }
 
 FAssetEditor_QuestSystemEditor::~FAssetEditor_QuestSystemEditor()
@@ -102,7 +104,6 @@ void FAssetEditor_QuestSystemEditor::ExtendToolbar()
 void FAssetEditor_QuestSystemEditor::InitQuestSystemEditor(const EToolkitMode::Type Mode, const TSharedPtr<IToolkitHost>& InitToolkitHost, UObject* ObjectToEdit)
 {
 	EditingObject = CastChecked<UQuestSystemGraph>(ObjectToEdit);
-	//EditingObject = CastChecked<ATestQuestActor>(ObjectToEdit);
     EditorSettings = NewObject<UGraphEditorSettings_QuestSystemEditor>(UGraphEditorSettings_QuestSystemEditor::StaticClass());
 	CreateEdGraph();
 
@@ -137,7 +138,7 @@ void FAssetEditor_QuestSystemEditor::InitQuestSystemEditor(const EToolkitMode::T
 				->Split
 				(
 					FTabManager::NewStack()
-					->SetSizeCoefficient(0.8f)
+					->SetSizeCoefficient(0.6f)
 					->SetHideTabWell(false)
 					->AddTab(FQuestSystemEditorTabs::ViewportTabId, ETabState::OpenedTab)
 				)
@@ -145,7 +146,7 @@ void FAssetEditor_QuestSystemEditor::InitQuestSystemEditor(const EToolkitMode::T
 				(
 				    FTabManager::NewSplitter()
 				    ->SetOrientation(Orient_Vertical)
-				    ->SetSizeCoefficient(0.2f)
+				    ->SetSizeCoefficient(0.4f)
                     ->Split
                     (
                         FTabManager::NewStack()

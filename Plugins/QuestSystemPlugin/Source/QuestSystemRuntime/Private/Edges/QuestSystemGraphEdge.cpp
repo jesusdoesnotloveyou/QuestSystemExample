@@ -1,6 +1,6 @@
 // Quest System by JDNLY. All Rights Reserved
 
-#include "QuestSystemGraphEdge.h"
+#include "Edges/QuestSystemGraphEdge.h"
 
 UQuestSystemGraphEdge::UQuestSystemGraphEdge()
 {
