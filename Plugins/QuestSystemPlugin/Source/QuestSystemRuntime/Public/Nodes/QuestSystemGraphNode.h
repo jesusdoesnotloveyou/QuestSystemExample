@@ -48,7 +48,7 @@ protected:
     FGuid NodeGUID;
 
 private:
-    UPROPERTY(VisibleAnywhere, Category = "QuestSystemGraphNode")
+    UPROPERTY(EditDefaultsOnly, Category = "QuestSystemGraphNode")
     UWorld* OwningWorld;
     
 public:
@@ -117,6 +117,8 @@ public:
 
 	virtual bool CanCreateConnectionTo(UQuestSystemGraphNode* Other, int32 NumberOfChildrenNodes, FText& ErrorMessage);
 	virtual bool CanCreateConnectionFrom(UQuestSystemGraphNode* Other, int32 NumberOfParentNodes, FText& ErrorMessage);
+
+    virtual void OnCreatedInEditor() {};
 
 #endif
 };

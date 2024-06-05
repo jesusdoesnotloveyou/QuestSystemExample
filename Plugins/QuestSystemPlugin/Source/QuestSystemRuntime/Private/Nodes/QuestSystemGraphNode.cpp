@@ -1,8 +1,9 @@
 // Quest System by JDNLY. All Rights Reserved
 
-#include "QuestSystemGraphNode.h"
-#include "QuestSystemGraph.h"
+#include "Nodes/QuestSystemGraphNode.h"
+#include "Graph/QuestSystemGraph.h"
 #include "Chaos/SAT.h"
+#include "Data/QuestSystemContext.h"
 
 DEFINE_LOG_CATEGORY_STATIC(LogQuestSystemGraphNode, All, All);
 DECLARE_LOG_CATEGORY_EXTERN(LogQuestSystemGraphNodeTestExtern, Warning, All);
@@ -47,6 +48,9 @@ UWorld* UQuestSystemGraphNode::GetWorld() const
     const ULevel* Level = GetTypedOuter<ULevel>();
     //~
     if (Level) return Level->GetWorld();
+
+    if (Graph) return Graph->Context->GetWorld();
+    
     return nullptr;
 }
 
