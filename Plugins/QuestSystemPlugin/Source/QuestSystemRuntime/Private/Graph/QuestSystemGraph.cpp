@@ -1,7 +1,11 @@
 // Quest System by JDNLY. All Rights Reserved
 
-#include "QuestSystemGraph.h"
+#include "Graph/QuestSystemGraph.h"
 #include "Engine/Engine.h"
+#include "Nodes/QuestSystemGraphNode.h"
+#include "Edges/QuestSystemGraphEdge.h"
+#include "Data/QuestSystemContext.h"
+#include "Nodes/QuestSystemGraphNode_Base.h"
 
 DEFINE_LOG_CATEGORY_STATIC(LogQuestSystemGraph, All, All);
 
@@ -11,12 +15,14 @@ UQuestSystemGraph::UQuestSystemGraph()
 {   
 	NodeType = UQuestSystemGraphNode::StaticClass();
 	EdgeType = UQuestSystemGraphEdge::StaticClass();
-    
+
+    GraphGUID = FGuid::NewGuid();
 	bEdgeEnabled = true;
-	
+
+
 #if WITH_EDITORONLY_DATA
+    Context = nullptr;
 	EdGraph = nullptr;
-	
 	bCanRenameNode = true;
 	
 #endif
@@ -25,6 +31,21 @@ UQuestSystemGraph::UQuestSystemGraph()
 UQuestSystemGraph::~UQuestSystemGraph()
 {
 	
+}
+
+UQuestSystemGraphNode* UQuestSystemGraph::GetStartNode() const
+{
+    return StartNode;
+}
+
+TArray<UQuestSystemGraphNode*> UQuestSystemGraph::GetRootNodes() const
+{
+    return RootNodes;
+}
+    
+TArray<UQuestSystemGraphNode*> UQuestSystemGraph::GetAllNodes() const
+{
+    return AllNodes;
 }
 
 void UQuestSystemGraph::Print(bool ToConsole, bool ToScreen)
@@ -109,15 +130,34 @@ void UQuestSystemGraph::GetNodesByLevel(int Level, TArray<UQuestSystemGraphNode*
 	}
 }
 
+void UQuestSystemGraph::CreateGraph()
+{
+#if WITH_EDITOR
+    // EdGraph already exists
+    if (EdGraph) return;
+
+    // Start node already exists
+    if (StartNode) return;
+
+    StartNode = ConstructQuestSystemNode<UQuestSystemGraphNode_Base>();
+    if (StartNode)
+    {
+        StartNode->Graph = this;
+        RootNodes.Add(StartNode);
+        AllNodes.Add(StartNode);    
+    }
+#endif
+}
+
 void UQuestSystemGraph::ClearGraph()
 {
-	for (const auto& QuestSystemGraphNode : AllNodes)
+	for (const auto& Node : AllNodes)
 	{
-		if (QuestSystemGraphNode)
+		if (Node)
 		{
-			QuestSystemGraphNode->ParentNodes.Empty();
-			QuestSystemGraphNode->ChildrenNodes.Empty();
-			QuestSystemGraphNode->Edges.Empty();
+			Node->ParentNodes.Empty();
+			Node->ChildrenNodes.Empty();
+			Node->Edges.Empty();
 		}
 	}
 	AllNodes.Empty();

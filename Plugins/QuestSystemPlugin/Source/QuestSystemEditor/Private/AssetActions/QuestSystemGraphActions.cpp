@@ -1,13 +1,13 @@
 // Quest System by JDNLY. All Rights Reserved
 
 #include "AssetActions/QuestSystemGraphActions.h"
-#include "QuestSystemGraph.h"
 #include "AssetEditor/AssetEditor_QuestSystemEditor.h"
+
+#include "Graph/QuestSystemGraph.h"
 
 #define LOCTEXT_NAMESPACE "QuestSystemGraphActions"
 
-FQuestSystemGraphActions::FQuestSystemGraphActions(EAssetTypeCategories::Type InAssetCategory)
-    : AssetTypeCategory(InAssetCategory) {}
+FQuestSystemGraphActions::FQuestSystemGraphActions() {}
 
 UClass* FQuestSystemGraphActions::GetSupportedClass() const
 {
@@ -16,17 +16,17 @@ UClass* FQuestSystemGraphActions::GetSupportedClass() const
 
 FText FQuestSystemGraphActions::GetName() const
 {
-	return LOCTEXT("QuestSystemGraphActions", "Quest Editor");
+	return LOCTEXT("QuestSystemGraphActionsName", "Quest Editor");
 }
 
 FColor FQuestSystemGraphActions::GetTypeColor() const
 {
-	return FColor::Purple;
+	return FColor::Yellow;
 }
 
 uint32 FQuestSystemGraphActions::GetCategories()
 {
-	return AssetTypeCategory;
+    return FModuleManager::Get().IsModuleLoaded("AssetTools") ? FAssetToolsModule::GetModule().Get().FindAdvancedAssetCategory(FName("Quest System Editor")) : EAssetTypeCategories::Gameplay;
 }
 
 void FQuestSystemGraphActions::OpenAssetEditor(const TArray<UObject*>& InObjects, TSharedPtr<IToolkitHost> EditWithinLevelEditor)

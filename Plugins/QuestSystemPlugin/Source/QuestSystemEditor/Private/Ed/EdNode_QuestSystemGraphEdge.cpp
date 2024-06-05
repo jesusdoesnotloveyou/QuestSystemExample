@@ -2,7 +2,8 @@
 
 #include "Ed/EdNode_QuestSystemGraphEdge.h"
 #include "Ed/EdGraphNode_QuestSystemGraphNode.h"
-#include "QuestSystemGraphEdge.h"
+
+#include "Edges/QuestSystemGraphEdge.h"
 
 #define LOCTEXT_NAMESPACE "EdNode_QuestSystemGraphEdge"
 

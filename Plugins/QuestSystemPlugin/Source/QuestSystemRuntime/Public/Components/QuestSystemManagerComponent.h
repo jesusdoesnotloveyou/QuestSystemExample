@@ -3,7 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "QuestSystemGraphNode.h"
+#include "Nodes/QuestSystemGraphNode.h"
 #include "Components/ActorComponent.h"
 #include "QuestSystemManagerComponent.generated.h"
 

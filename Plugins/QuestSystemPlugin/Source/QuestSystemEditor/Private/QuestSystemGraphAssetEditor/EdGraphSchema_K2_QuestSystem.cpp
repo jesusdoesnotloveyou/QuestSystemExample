@@ -3,8 +3,8 @@
 #include "QuestSystemGraphAssetEditor/EdGraphSchema_K2_QuestSystem.h"
 
 #include "GraphEditorActions.h"
-#include "QuestSystemGraph.h"
-#include "QuestSystemGraphNode.h"
+#include "Graph/QuestSystemGraph.h"
+#include "Nodes/QuestSystemGraphNode.h"
 #include "ToolMenus.h"
 #include "Ed/EdGraph_QuestSystemGraph.h"
 #include "Ed/EdGraphNode_QuestSystemGraphNode.h"

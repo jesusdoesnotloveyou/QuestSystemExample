@@ -3,8 +3,6 @@
 #include "GraphSchema/AssetQuestSystemGraphSchema.h"
 
 #include "GraphEditorActions.h"
-#include "QuestSystemGraph.h"
-#include "QuestSystemGraphNode.h"
 #include "ToolMenus.h"
 #include "Ed/EdGraph_QuestSystemGraph.h"
 #include "Ed/EdGraphNode_QuestSystemGraphNode.h"
@@ -12,6 +10,10 @@
 #include "Framework/Commands/GenericCommands.h"
 #include "Classes/EditorStyleSettings.h"
 #include "QuestSystemGraphAssetEditor/ConnectionDrawingPolicy_QuestSystemEditor.h"
+
+#include "Graph/QuestSystemGraph.h"
+#include "Nodes/QuestSystemGraphNode.h"
+#include "Edges/QuestSystemGraphEdge.h"
 
 #define LOCTEXT_NAMESPACE "AssetSchema_QuestSystemEditor"
 

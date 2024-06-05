@@ -3,7 +3,8 @@
 #include "Ed/EdGraphNode_QuestSystemGraphNode.h"
 #include "Ed/EdGraph_QuestSystemGraph.h"
 #include "GraphSchema/AssetQuestSystemGraphSchema.h"
-#include "QuestSystemGraphNode.h"
+
+#include "Nodes/QuestSystemGraphNode.h"
 
 UEdGraphNode_QuestSystemGraphNode::UEdGraphNode_QuestSystemGraphNode()
 {

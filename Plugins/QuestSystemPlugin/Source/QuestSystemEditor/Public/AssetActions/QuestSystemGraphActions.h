@@ -8,10 +8,8 @@
 class QUESTSYSTEMEDITOR_API FQuestSystemGraphActions : public FAssetTypeActions_Base
 {
 public:
-	FQuestSystemGraphActions(EAssetTypeCategories::Type InAssetCategory);
-private:
-	EAssetTypeCategories::Type AssetTypeCategory;
-public:
+	FQuestSystemGraphActions();
+    
     // IAssetTypeActions interface
 	virtual FText GetName() const override;
 	virtual FColor GetTypeColor() const override;
