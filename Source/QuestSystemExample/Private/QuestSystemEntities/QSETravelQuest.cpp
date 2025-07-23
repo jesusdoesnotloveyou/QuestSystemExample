@@ -17,23 +17,27 @@ void AQSETravelQuest::BeginPlay()
 UQSEObjectiveCollection* AQSETravelQuest::CreateRootObjectiveCollection()
 {
 	UE_LOG(LogQSETravelQuest, Warning, TEXT("CreateRootObjectiveCollection() called for derived class"));
-	RootObjectiveCollection = NewObject<UQSEObjectiveCollection>(this, TEXT("Journey to Novigrad"));
+	RootObjectiveCollection = NewObject<UQSEObjectiveCollection>(this, TEXT("Travel around the scene"));
 	PopulateObjectives(RootObjectiveCollection);
 	return RootObjectiveCollection;
 }
 
 void AQSETravelQuest::PopulateObjectives(UQSEObjectiveCollection* RootCollection)
 {
-	auto Objective = NewObject<UQSEReachDestinationObjective>(this, TEXT("Bridge across Pontar"));
+	auto Objective = NewObject<UQSEReachDestinationObjective>(this, TEXT("Reach point A"));
     Objective->DestinationTrigger = TravelQuestTriggers[0];
 	RootCollection->AddObjective(Cast<UQSEBaseObjective>(Objective));
 
-    Objective = NewObject<UQSEReachDestinationObjective>(this, TEXT("Cross the river"));
+    Objective = NewObject<UQSEReachDestinationObjective>(this, TEXT("Reach point B"));
     Objective->DestinationTrigger = TravelQuestTriggers[1];
     RootCollection->AddObjective(Cast<UQSEBaseObjective>(Objective));
 
-    Objective = NewObject<UQSEReachDestinationObjective>(this, TEXT("Get to Novigrad"));
+    Objective = NewObject<UQSEReachDestinationObjective>(this, TEXT("Reach point C"));
     Objective->DestinationTrigger = TravelQuestTriggers[2];
+    RootCollection->AddObjective(Cast<UQSEBaseObjective>(Objective));
+
+    Objective = NewObject<UQSEReachDestinationObjective>(this, TEXT("Reach point D"));
+    Objective->DestinationTrigger = TravelQuestTriggers[3];
     RootCollection->AddObjective(Cast<UQSEBaseObjective>(Objective));
 }
 
