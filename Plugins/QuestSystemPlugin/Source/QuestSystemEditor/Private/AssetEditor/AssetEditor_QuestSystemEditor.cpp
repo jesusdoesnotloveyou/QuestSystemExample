@@ -18,6 +18,7 @@
 
 #include "QuestSystemRuntime/Public/Graph/QuestSystemGraph.h"
 #include "TestQuestActor.h"
+#include "Kismet/GameplayStatics.h"
 
 DEFINE_LOG_CATEGORY_STATIC(LogAssetEditor_QuestSystemGraph, All, All);
 
@@ -60,7 +61,13 @@ FAssetEditor_QuestSystemEditor::FAssetEditor_QuestSystemEditor()
     const auto Levels = World->GetLevels();
     for (const auto& Level : Levels)
     {
+        if (!Level) continue;
         UE_LOG(LogAssetEditor_QuestSystemGraph, Error, TEXT("LevelName: %s"), *Level->GetName());
+
+        TArray<AActor*> ActorsOnTheLevel;
+        UGameplayStatics::GetAllActorsOfClass(World, AActor::StaticClass(), ActorsOnTheLevel);
+        
+        UE_LOG(LogAssetEditor_QuestSystemGraph, Error, TEXT("Name of the first actor in the array is %s"), *ActorsOnTheLevel[0]->GetName());
     }
 
     if (GEditor && GEditor->PlayWorld)
@@ -495,7 +502,6 @@ void FAssetEditor_QuestSystemEditor::DeleteSelectedNodes()
 	if (!CurrentGraphEditor.IsValid()) return;
 
 	const FScopedTransaction Transaction(FGenericCommands::Get().Delete->GetDescription());
-
 	CurrentGraphEditor->GetCurrentGraph()->Modify();
 
 	const FGraphPanelSelectionSet SelectedNodes = CurrentGraphEditor->GetSelectedNodes();
